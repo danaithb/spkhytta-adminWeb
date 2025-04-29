@@ -30,11 +30,7 @@ const AdminPage = () => {
     currentTab,
     setCurrentTab,
     statusFilter,
-<<<<<<< HEAD
     setStatusFilter,
-=======
-    setStatusFilter
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
   } = useAdminPageState();
 
   const handleTabChange = (event, newValue) => {
