@@ -1,28 +1,30 @@
-import { useState } from "react";
-import { bookings } from "../utils/dummyData"; // Correct import of bookings
+/*import { bookings } from "../utils/dummyData"; // Correct import of bookings*/
+import { useState, useEffect } from 'react';
+import { fetchBookings } from '../api/admin';
 
 const useAdminPageState = () => {
-  // Initializing state with the imported 'bookings' data
-  const [bookingsState, setBookings] = useState(bookings); 
+  /*const [bookingsState, setBookings] = useState(bookings);*/
+  const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [search, setSearch] = useState("");  
-  const [selectedDate, setSelectedDate] = useState(new Date());  
-  const [currentTab, setCurrentTab] = useState(0); 
-  const [statusFilter, setStatusFilter] = useState(""); 
+  const [currentTab, setCurrentTab] = useState(0);
+  const [statusFilter, setStatusFilter] = useState("");
+
+  useEffect(() => {
+    fetchBookings().then(setBookings).catch(console.error);
+  }, []);
 
   return {
-    bookings: bookingsState, 
+    bookings,
     setBookings,
     selectedBooking,
     setSelectedBooking,
     search,
     setSearch,
-    selectedDate,
-    setSelectedDate,
     currentTab,
     setCurrentTab,
     statusFilter,
-    setStatusFilter
+    setStatusFilter,
   };
 };
 

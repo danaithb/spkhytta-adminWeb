@@ -14,10 +14,19 @@ import {
   MenuItem,
 } from "@mui/material";
 
-import BookingList from "../components/BookingList";
+import {
+  fetchBookings, updateBooking,
+  createBookingForUser, deleteBooking
+} from '../api/admin';
+import useAdminPageState from '../hooks/useAdminPageState';
+import BookingList from '../components/BookingList';
+import BookingForm from '../components/BookingForm';
+import LotteryPage from "../components/LotteryPage";
+/*import BookingList from "../components/BookingList";
 import BookingForm from "../components/BookingForm";
 import LotteryPage from "../components/LotteryPage"; 
-import useAdminPageState from "../hooks/useStateAdminPage";
+import useAdminPageState from "../hooks/useStateAdminPage";*/
+
 
 const AdminPage = () => {
   const {
@@ -57,10 +66,28 @@ const AdminPage = () => {
     setCurrentTab(0);
   };
 
-  const handleBookingCreate = (newBooking) => {
-    setBookings([...bookings, newBooking]);
-    setSelectedBooking(null); // Reset selected booking after creation
-    setCurrentTab(0); // Go back to "Booking Liste"
+  const handleBookingCreate = async (form) => {
+    try {
+      const payload = {
+        userId: form.userId,
+        cabinId: form.cabinId,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        numberOfGuests: form.numberOfGuests,
+        businessTrip: form.businessTrip,
+      };
+      const newBooking = await createBookingForUser(payload);
+      setBookings([...bookings, newBooking]);
+      setCurrentTab(0);
+    } catch (e) {
+      alert(e.response?.data || e.message);
+    }
+  };
+
+  const handleBookingDelete = async (bookingId) => {
+    if (!window.confirm('Er du sikker?')) return;
+    await deleteBooking(bookingId);
+    setBookings(bookings.filter(b => b.bookingId !== bookingId));
   };
 
   return (
@@ -85,7 +112,7 @@ const AdminPage = () => {
           <InputLabel>Status</InputLabel>
           <Select
             value={statusFilter}
-            onChange={handleStatusChange}
+            onChange={(e) => setStatusFilter(e.target.value)}
             label="Status"
           >
             <MenuItem value="">All</MenuItem>
@@ -110,8 +137,8 @@ const AdminPage = () => {
         >
           <Tab label="Booking Liste" />
           <Tab label="Redigere Booking" />
-          <Tab label="Loddsystem" />
-          <Tab label="Administrer Booking" />
+          <mark><Tab label="Loddsystem"/></mark>
+          <mark><Tab label="Administrer Booking"/></mark>
         </Tabs>
       </Box>
 
@@ -121,11 +148,12 @@ const AdminPage = () => {
           <Grid item xs={12}>
             <Paper sx={{ p: 3, borderRadius: 2 }}>
               <BookingList
-                bookings={bookings.filter((booking) =>
-                  statusFilter ? booking.status === statusFilter : true
-                )}
+                  bookings={bookings.filter(b =>
+                      statusFilter ? b.status === statusFilter : true
+                  )}
                 search={search}
-                handleEditClick={handleEditClick}
+                handleEditClick={b => { setSelectedBooking(b); setCurrentTab(1); }}
+                handleDeleteClick={handleBookingDelete}
               />
             </Paper>
           </Grid>
@@ -134,26 +162,28 @@ const AdminPage = () => {
 
       {/* Edit Booking Form */}
       {currentTab === 1 && selectedBooking && (
-        <BookingForm
-          selectedBooking={selectedBooking}
-          handleBookingUpdate={handleBookingUpdate}
-          onCancel={handleCancelEdit}
-        />
+          <BookingForm
+              selectedBooking={selectedBooking}
+              handleBookingUpdate={handleBookingUpdate}
+              onCancel={() => setCurrentTab(0)}
+          />
       )}
 
-      {/* Create Booking Form (Administrer Booking) */}
+      {/* Loddsystem */}
+      <mark>{currentTab === 2 && (
+          <LotteryPage bookings={bookings} />
+      )}</mark>
+
+
+      {/* Administrer Booking */}
       {currentTab === 3 && (
-        <BookingForm
-          selectedBooking={null} // No booking selected for creating new one
-          handleBookingUpdate={handleBookingCreate} // Use the create function here
-          onCancel={() => setCurrentTab(0)} // Return to booking list on cancel
-        />
+          <BookingForm
+              selectedBooking={null}
+              handleBookingUpdate={handleBookingCreate}
+              onCancel={() => setCurrentTab(0)}
+          />
       )}
 
-      {/* Lottery Page */}
-      {currentTab === 2 && (
-        <LotteryPage bookings={bookings} />
-      )}
     </Box>
   );
 };
