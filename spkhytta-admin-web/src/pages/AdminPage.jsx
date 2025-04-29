@@ -1,28 +1,7 @@
 import React from "react";
-<<<<<<< HEAD
-import {
-  Box,
-  Grid,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Tabs,
-  Tab,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
-
-import BookingList from "../components/BookingList";
-import BookingForm from "../components/BookingForm";
-import LotteryPage from "../components/LotteryPage"; 
-=======
 import { Box, Grid, TextField, Button, Paper, Typography, Tabs, Tab, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import BookingList from "../components/BookingList"; 
 import BookingForm from "../components/BookingForm"; 
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
 import useAdminPageState from "../hooks/useStateAdminPage";
 
 const AdminPage = () => {
@@ -36,11 +15,7 @@ const AdminPage = () => {
     currentTab,
     setCurrentTab,
     statusFilter,
-<<<<<<< HEAD
-    setStatusFilter,
-=======
     setStatusFilter
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
   } = useAdminPageState();
 
   const handleTabChange = (event, newValue) => {
@@ -53,20 +28,12 @@ const AdminPage = () => {
 
   const handleEditClick = (booking) => {
     setSelectedBooking(booking);
-<<<<<<< HEAD
-    setCurrentTab(1); // Go to "Redigere Booking" tab
-=======
     setCurrentTab(1);
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
   };
 
   const handleCancelEdit = () => {
     setSelectedBooking(null);
-<<<<<<< HEAD
-    setCurrentTab(0); // Go back to "Booking Liste" tab
-=======
     setCurrentTab(0);
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
   };
 
   const handleBookingUpdate = (updatedBooking) => {
@@ -75,20 +42,8 @@ const AdminPage = () => {
     setCurrentTab(0);
   };
 
-<<<<<<< HEAD
-  const handleBookingCreate = (newBooking) => {
-    setBookings([...bookings, newBooking]);
-    setSelectedBooking(null); // Reset selected booking after creation
-    setCurrentTab(0); // Go back to "Booking Liste"
-  };
-
   return (
     <Box sx={{ maxWidth: "1200px", margin: "auto", padding: 3 }}>
-      
-=======
-  return (
-    <Box sx={{ maxWidth: "1200px", margin: "auto", padding: 3 }}>
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
       {/* Search Bar */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <TextField
@@ -106,15 +61,7 @@ const AdminPage = () => {
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <FormControl variant="outlined" sx={{ mr: 2, width: "200px" }}>
           <InputLabel>Status</InputLabel>
-<<<<<<< HEAD
-          <Select
-            value={statusFilter}
-            onChange={handleStatusChange}
-            label="Status"
-          >
-=======
           <Select value={statusFilter} onChange={handleStatusChange} label="Status">
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
             <MenuItem value="">All</MenuItem>
             <MenuItem value="Confirmed">Bekreftet</MenuItem>
             <MenuItem value="Pending">Påvente</MenuItem>
@@ -122,33 +69,14 @@ const AdminPage = () => {
             <MenuItem value="Blocked">Blokket</MenuItem>
           </Select>
         </FormControl>
-<<<<<<< HEAD
-        <Button variant="contained" onClick={() => setStatusFilter("")}>
-          Clear Filter
-        </Button>
-=======
         <Button variant="contained" onClick={() => setStatusFilter("")}>Clear Filter</Button>
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
       </Box>
 
       {/* Tabs */}
       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
-<<<<<<< HEAD
-        <Tabs
-          value={currentTab}
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab label="Booking Liste" />
-          <Tab label="Redigere Booking" />
-          <Tab label="Loddsystem" />
-          <Tab label="Administrer Booking" />
-=======
         <Tabs value={currentTab} onChange={handleTabChange} indicatorColor="primary" textColor="primary">
           <Tab label="Booking Liste" />
           <Tab label="Redigere Booking" />
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
         </Tabs>
       </Box>
 
@@ -157,16 +85,9 @@ const AdminPage = () => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper sx={{ p: 3, borderRadius: 2 }}>
-<<<<<<< HEAD
-              <BookingList
-                bookings={bookings.filter((booking) =>
-                  statusFilter ? booking.status === statusFilter : true
-                )}
-=======
               <Typography variant="h6" sx={{ mb: 4 }}></Typography>
               <BookingList
                 bookings={bookings.filter((booking) => statusFilter ? booking.status === statusFilter : true)}
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
                 search={search}
                 handleEditClick={handleEditClick}
               />
@@ -183,23 +104,6 @@ const AdminPage = () => {
           onCancel={handleCancelEdit}
         />
       )}
-<<<<<<< HEAD
-
-      {/* Create Booking Form (Administrer Booking) */}
-      {currentTab === 3 && (
-        <BookingForm
-          selectedBooking={null} // No booking selected for creating new one
-          handleBookingUpdate={handleBookingCreate} // Use the create function here
-          onCancel={() => setCurrentTab(0)} // Return to booking list on cancel
-        />
-      )}
-
-      {/* Lottery Page */}
-      {currentTab === 2 && (
-        <LotteryPage bookings={bookings} />
-      )}
-=======
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
     </Box>
   );
 };

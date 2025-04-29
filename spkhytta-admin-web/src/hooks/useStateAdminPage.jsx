@@ -11,11 +11,7 @@ const useAdminPageState = () => {
   const [statusFilter, setStatusFilter] = useState(""); 
 
   return {
-<<<<<<< HEAD
-    bookings: bookingsState, 
-=======
     bookings: bookingsState, // Renamed state variable
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
     setBookings,
     selectedBooking,
     setSelectedBooking,

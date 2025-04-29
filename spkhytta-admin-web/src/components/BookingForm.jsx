@@ -12,40 +12,12 @@ import {
 } from "@mui/material";
 
 const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
-<<<<<<< HEAD
-  // Initialize formData with default values if selectedBooking is null
-  const [formData, setFormData] = useState(
-    selectedBooking || {
-      guestName: "",
-      startDate: "",
-      endDate: "",
-      status: "Pending", // Default to "Pending" status
-      price: 0,
-    }
-  );
-
-  // Sync the local form state with the selectedBooking prop when it changes
-  useEffect(() => {
-    if (selectedBooking) {
-      setFormData(selectedBooking);
-    } else {
-      // If no selectedBooking, ensure the formData is reset to defaults for creating a new booking
-      setFormData({
-        guestName: "",
-        startDate: "",
-        endDate: "",
-        status: "Pending",
-        price: 0,
-      });
-    }
-=======
   // Local state for the form to control changes
   const [formData, setFormData] = useState(selectedBooking);
 
   // Sync the local form state with the selectedBooking prop when it changes
   useEffect(() => {
     setFormData(selectedBooking);
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
   }, [selectedBooking]);
 
   // Handle changes to form fields
@@ -60,11 +32,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent page reload
-<<<<<<< HEAD
-    handleBookingUpdate(formData); // Pass form data to the parent component for processing
-=======
     handleBookingUpdate(formData);
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
   };
 
   return (
@@ -78,11 +46,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       }}
     >
       <Typography variant="h6" sx={{ mb: 2 }}>
-<<<<<<< HEAD
-        {selectedBooking ? "Rediger Booking" : "Opprett Booking"} {/* Change form title */}
-=======
         Rediger Booking
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -128,11 +92,6 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             <MenuItem value="Confirmed">Bekreftet</MenuItem>
             <MenuItem value="Cancelled">Kansellert</MenuItem>
             <MenuItem value="Blocked">Blokkert</MenuItem>
-<<<<<<< HEAD
-            <MenuItem value="Jobb">Jobb</MenuItem>
-            <MenuItem value="Private">Private</MenuItem>
-=======
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
           </Select>
         </FormControl>
 
@@ -150,22 +109,6 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             sx={{ mb: 2 }}
           />
         )}
-<<<<<<< HEAD
-        
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-         <Button type="submit" variant="contained" color="primary">
-          {selectedBooking ? "Lagre" : "Opprett"} {/* Change button text */}
-          </Button>
-        <Button
-        variant="outlined"
-        onClick={onCancel}
-        sx={{ borderColor: "#FF0000", color: "#FF0000" }} // Set border and text color to red
-         >
-          Avbryt
-       </Button> 
-      </Box>
-
-=======
 
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button type="submit" variant="contained" color="primary">
@@ -175,7 +118,6 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             Avbryt
           </Button>
         </Box>
->>>>>>> 03593270dd07b59a1bdc14461125d72ef08485be
       </form>
     </Paper>
   );
