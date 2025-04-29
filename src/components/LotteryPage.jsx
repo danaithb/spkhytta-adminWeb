@@ -7,6 +7,7 @@ import {
   TextField, 
   Alert
 } from "@mui/material";
+import {fetchBookings} from "../api/admin";
 
 const formatDate = (dateStr) => {
   const [year, month, day] = dateStr.split("-");
@@ -20,28 +21,44 @@ const LotteryPage = ({ bookings }) => {
   const [winner, setWinner] = useState(null);
   const [error, setError] = useState("");
 
+  // Hent alle bookinger fra backend ved mount
   useEffect(() => {
-    if (startDate && endDate) {
-      if (startDate > endDate) {
-        setError("Sluttdato må være etter startdato");
-        setFilteredUsers([]);
-      } else {
-        setError("");
-        const filtered = bookings.filter(booking => 
-          booking.startDate >= startDate && 
-          booking.endDate <= endDate
-        );
-        setFilteredUsers(filtered);
-      }
-    } else {
-      setFilteredUsers([]);
-    }
-  }, [startDate, endDate, bookings]);
+    fetchBookings()
+        .then(setAllBookings)
+        .catch(console.error);
+  }, []);
 
-  const pickWinner = () => {
-    if (filteredUsers.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * filteredUsers.length);
-    setWinner(filteredUsers[randomIndex]);
+  useEffect(() => {
+    if (!startDate || !endDate) {
+      setFiltered([]);
+      return;
+    }
+    if (startDate > endDate) {
+      setError("Sluttdato må være etter startdato");
+      setFiltered([]);
+      return;
+    }
+    setError("");
+    setFiltered(
+        allBookings.filter(b =>
+            b.startDate >= startDate && b.endDate <= endDate
+        )
+    );
+  }, [startDate, endDate, allBookings]);
+
+  const handleProcess = async () => {
+    if (filtered.length === 0) return;
+    try {
+      // Bruk cabinId fra første booking i perioden
+      const cabinId = filtered[0].cabin.cabinId;
+      // Kall backend-loddtrekning
+      const result = await processBookings(cabinId, startDate, endDate);
+      setWinner(result);
+      // Oppdater lokal liste
+      fetchBookings().then(setAllBookings).catch(console.error);
+    } catch (e) {
+      alert(e.response?.data || e.message);
+    }
   };
 
   return (
