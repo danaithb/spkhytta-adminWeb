@@ -1,11 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   Box,
   Grid,
   TextField,
   Button,
   Paper,
-  Typography,
   Tabs,
   Tab,
   FormControl,
@@ -18,16 +17,10 @@ import {
   fetchBookings, updateBooking,
   createBookingForUser, deleteBooking
 } from '../api/admin';
-
+import useAdminPageState from "../hooks/useAdminPageState";
 import BookingList from '../components/BookingList';
 import BookingForm from '../components/BookingForm';
 import LotteryPage from "../components/LotteryPage";
-/*import BookingList from "../components/BookingList";
-import BookingForm from "../components/BookingForm";
-import LotteryPage from "../components/LotteryPage"; 
-import useAdminPageState from "../hooks/useStateAdminPage";*/
-import useAdminPageState from '../hooks/useAdminPageState';
-
 
 const AdminPage = () => {
   const {
@@ -61,11 +54,33 @@ const AdminPage = () => {
     setCurrentTab(0); // Go back to "Booking Liste" tab
   };
 
-  const handleBookingUpdate = (updatedBooking) => {
-    setBookings(bookings.map((b) => (b.id === updatedBooking.id ? updatedBooking : b)));
-    setSelectedBooking(null);
-    setCurrentTab(0);
+  const handleBookingUpdate = async (form) => {
+    try {
+      // Prepare payload for backend
+      const payload = {
+        guestName: form.guestName,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        status: form.status,
+        price: form.price
+      };
+
+      // Call backend API
+      const updated = await updateBooking(form.bookingId, payload);
+
+      // Update local state
+      setBookings(bookings.map(b =>
+          b.bookingId === updated.bookingId ? updated : b
+      ));
+
+      // Return to list view
+      setCurrentTab(0);
+      setSelectedBooking(null);
+    } catch (e) {
+      alert(e.response?.data || e.message);
+    }
   };
+
 
   const handleBookingCreate = async (form) => {
     try {
@@ -138,8 +153,8 @@ const AdminPage = () => {
         >
           <Tab label="Booking Liste" />
           <Tab label="Redigere Booking" />
-          <mark><Tab label="Loddsystem"/></mark>
-          <mark><Tab label="Administrer Booking"/></mark>
+          <Tab label="Loddsystem"/>
+          <Tab label="Administrer Booking"/>
         </Tabs>
       </Box>
 
@@ -170,10 +185,9 @@ const AdminPage = () => {
           />
       )}
 
-      {/* Loddsystem */}
-      <mark>{currentTab === 2 && (
+      {currentTab === 2 && (
           <LotteryPage bookings={bookings} />
-      )}</mark>
+      )}
 
 
       {/* Administrer Booking */}
