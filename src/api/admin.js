@@ -1,26 +1,23 @@
 import axios from 'axios';
+const base = 'http://localhost:8080/api/admin';
 
-const client = axios.create({
-    baseURL: 'http://localhost:8080/api/admin',
-});
-
-export const setToken = (token) => {
-    client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-};
+function getAuthHeader() {
+    const token = localStorage.getItem('firebaseToken');
+    return { Authorization: `Bearer ${token}` };
+}
 
 export const fetchBookings = () =>
-    client.get('/bookings').then(res => res.data);
+    axios.get(`${base}/bookings`, { headers: getAuthHeader() })
+        .then(res => res.data);
 
-export const updateBooking = (bookingId, payload) =>
-    client.put(`/edit-booking/${bookingId}`, payload).then(res => res.data);
+export const updateBooking = (id, payload) =>
+    axios.put(`${base}/edit-booking/${id}`, payload, { headers: getAuthHeader() })
+        .then(res => res.data);
 
-export const createBookingForUser = (payload) =>
-    client.post('/bookings', payload).then(res => res.data);
+export const createBookingForUser = payload =>
+    axios.post(`${base}/bookings`, payload, { headers: getAuthHeader() })
+        .then(res => res.data);
 
-export const deleteBooking = (bookingId) =>
-    client.delete(`/bookings/${bookingId}`);
-
-export const fetchUsers = () =>
-    client.get('/all-users').then(res => res.data);
-
-
+export const deleteBooking = id =>
+    axios.delete(`${base}/bookings/${id}`, { headers: getAuthHeader() })
+        .then(res => res.data);

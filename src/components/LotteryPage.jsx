@@ -118,14 +118,20 @@ const LotteryPage = ({ bookings }) => {
 
       {/* Pick Winner Button */}
       <Button
-        onClick={pickWinner}
-        disabled={!!error || filteredUsers.length === 0}
-        variant="contained"
-        fullWidth
-        sx={{ mt: 4, py: 1.5, fontSize: "16px", borderRadius: 2 }}
+          onClick={pickWinner}
+          disabled={!!error || filteredUsers.length === 0}
+          variant="contained"
+          sx={{
+            mt: 4,
+            py: 1.5,
+            fontSize: "16px",
+            borderRadius: 2,
+            width: "100%"   // erstatter fullWidth
+          }}
       >
         Trekk tilfeldig vinner
       </Button>
+
 
       {/* Winner Display */}
       {winner && (
