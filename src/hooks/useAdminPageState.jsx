@@ -1,9 +1,7 @@
-/*import { bookings } from "../utils/dummyData"; // Correct import of bookings*/
 import { useState, useEffect } from 'react';
 import { fetchBookings } from '../api/admin';
 
 const useAdminPageState = () => {
-  /*const [bookingsState, setBookings] = useState(bookings);*/
   const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [search, setSearch] = useState("");  
