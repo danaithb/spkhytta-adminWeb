@@ -1,57 +1,88 @@
 import React, { useState, useEffect } from "react";
-import {
-  TextField,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Box,
-  Typography,
-  Paper,
-} from "@mui/material";
+import {TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, Paper,} from "@mui/material";
+import { fetchUsers, fetchCabins } from "../api/admin"; 
 
 const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
-  // Initialize formData with default values if selectedBooking is null
-  const [formData, setFormData] = useState(
-    selectedBooking || {
-      guestName: "",
-      startDate: "",
-      endDate: "",
-      status: "Pending", // Default to "Pending" status
-      price: 0,
-    }
-  );
+  const [users, setUsers] = useState([]);
+  const [emailSearch, setEmailSearch] = useState("");
+  const [emailFeedback, setEmailFeedback] = useState("");
+  const [cabins, setCabins] = useState([]);
+  const [userId, setUserId] = useState(null);
 
-  // Sync the local form state with the selectedBooking prop when it changes
+  const [formData, setFormData] = useState(() => ({
+      name: selectedBooking?.user?.name || "",
+      startDate: selectedBooking?.startDate || "",
+      endDate: selectedBooking?.endDate || "",
+      status: selectedBooking?.status || "Pending",
+      price: selectedBooking?.price || 0,
+      cabinId: selectedBooking?.cabin?.cabinId || "",
+      businessTrip: selectedBooking?.tripType === "BUSINESS" || false,
+      numberOfGuests: selectedBooking?.numberOfGuests || 0,
+    }));
+
   useEffect(() => {
-    if (selectedBooking) {
-      setFormData(selectedBooking);
-    } else {
-      // If no selectedBooking, ensure the formData is reset to defaults for creating a new booking
-      setFormData({
-        guestName: "",
-        startDate: "",
-        endDate: "",
-        status: "Pending",
-        price: 0,
-      });
-    }
-  }, [selectedBooking]);
+    fetchUsers()
+        .then((data) => setUsers(data))
+        .catch((err) => console.error("Klarte ikke hente brukere:", err));
 
-  // Handle changes to form fields
+    fetchCabins()
+        .then((data) => {
+          console.log("Hentede hytter fra backend:", data); 
+          setCabins(data);
+        })
+        .catch((err) => console.error("Klarte ikke hente hytter:", err));
+  }, []);
+
+
+
+  useEffect(() => {
+  if (selectedBooking) {
+    setFormData({
+      name: selectedBooking.user?.name || "",
+      startDate: selectedBooking.startDate,
+      endDate: selectedBooking.endDate,
+      status: selectedBooking.status,
+      price: selectedBooking.price,
+      cabinId: selectedBooking.cabin?.cabinId || "",
+    });
+  }
+}, [selectedBooking]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
+
+  const handleEmailSearch = () => {
+  const user = users.find((u) => u.email.toLowerCase() === emailSearch.toLowerCase());
+  if (user) {
+    setUserId(user.userId);
+    setFormData((prev) => ({ ...prev, name: user.name }));
+    setEmailFeedback(`Fant bruker: ${user.name}`);
+  } else {
+    setUserId(null);
+    setEmailFeedback("Fant ikke bruker med den e-posten");
+  }
+};
 
   // Handle form submission
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload
-    handleBookingUpdate(formData); // Pass form data to the parent component for processing
+    e.preventDefault();
+    if (!selectedBooking && !userId) {
+      setEmailFeedback("Du må søke opp en gyldig e-post før innsending.");
+      return;
+    }
+
+
+    const payload = {
+      ...formData,
+      userId: selectedBooking?.user?.userId || userId,
+      tripType: formData.businessTrip ? "BUSINESS" : "PRIVATE",
+    };
+    handleBookingUpdate(payload);
   };
 
   return (
@@ -65,22 +96,66 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       }}
     >
       <Typography variant="h6" sx={{ mb: 2 }}>
-        {selectedBooking ? "Rediger Booking" : "Opprett Booking"} {/* Change form title */}
+        Opprett Booking
       </Typography>
+
       <form onSubmit={handleSubmit}>
+
+        {!selectedBooking && (
+            <>
+              <TextField
+                  fullWidth
+                  label="Søk e-post"
+                  value={emailSearch}
+                  onChange={(e) => setEmailSearch(e.target.value)}
+                  sx={{ mb: 1 }}
+              />
+              <Button
+                  variant="outlined"
+                  onClick={handleEmailSearch}
+                  sx={{ mb: 2 }}
+              >
+                Søk etter bruker
+              </Button>
+              {emailFeedback && (
+                  <Typography variant="body2" sx={{ mb: 2 }}>
+                    {emailFeedback}
+                  </Typography>
+              )}
+            </>
+        )}
+
         <TextField
           fullWidth
-          label="Guest Name"
-          value={formData.guestName}
+          label="Navn"
+          value={formData.name}
           onChange={handleInputChange}
-          name="guestName"
+          name="name"
           required
           sx={{ mb: 2 }}
+          disabled={!selectedBooking}
         />
+
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel>Hytte</InputLabel>
+          <Select
+              value={formData.cabinId}
+              onChange={handleInputChange}
+              name="cabinId"
+              required
+          >
+            {cabins.map((cabin) => (
+                <MenuItem key={cabin.cabinId} value={cabin.cabinId}>
+                  {cabin.cabinName}
+                </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <TextField
           fullWidth
           type="date"
-          label="Start Date"
+          label="Startdato"
           InputLabelProps={{ shrink: true }}
           value={formData.startDate}
           onChange={handleInputChange}
@@ -91,7 +166,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
         <TextField
           fullWidth
           type="date"
-          label="End Date"
+          label="Sluttdato"
           InputLabelProps={{ shrink: true }}
           value={formData.endDate}
           onChange={handleInputChange}
@@ -111,17 +186,48 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             <MenuItem value="Confirmed">Bekreftet</MenuItem>
             <MenuItem value="Cancelled">Kansellert</MenuItem>
             <MenuItem value="Blocked">Blokkert</MenuItem>
+            <MenuItem value="Waitlist">Venteliste</MenuItem>
             <MenuItem value="Jobb">Jobb</MenuItem>
             <MenuItem value="Private">Private</MenuItem>
           </Select>
         </FormControl>
 
+          <TextField
+              fullWidth
+              type="number"
+              label="Antall gjester"
+              InputLabelProps={{ shrink: true }}
+              value={formData.numberOfGuests}
+              onChange={handleInputChange}
+              name="numberOfGuests"
+              required
+              sx={{ mb: 2 }}
+          />
+
+
+          <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Turtype</InputLabel>
+              <Select
+                  value={formData.businessTrip ? "business" : "private"}
+                  onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        businessTrip: e.target.value === "business",
+                      }))
+                  }
+                  name="businessTrip"
+                  required
+              >
+                <MenuItem value="private">Privat</MenuItem>
+                <MenuItem value="business">Jobbtur</MenuItem>
+              </Select>
+            </FormControl>
         {/* Price field, shown only if status is not "Blokkert" */}
         {formData.status !== "Blocked" && (
           <TextField
             fullWidth
             type="number"
-            label="Price (NOK)"
+            label="Pris (NOK)"
             InputLabelProps={{ shrink: true }}
             value={formData.price}
             onChange={handleInputChange}
@@ -138,7 +244,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
         <Button
         variant="outlined"
         onClick={onCancel}
-        sx={{ borderColor: "#FF0000", color: "#FF0000" }} // Set border and text color to red
+        sx={{ borderColor: "#FF0000", color: "#FF0000" }} 
          >
           Avbryt
        </Button> 
