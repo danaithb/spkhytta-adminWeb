@@ -1,30 +1,52 @@
 import React, { useState } from 'react';
 import LoginPageStyles from '../theme/LoginPageStyles';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 const LoginPage = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // Simple validation (for now)
-    if (username === 'admin' && password === '1234567890') {
-      onLogin();
-    } else {
-      alert('Invalid credentials');
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+
+      localStorage.setItem("token", token);
+      console.log("Token lagret:", token);
+
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+
+      if (response.ok) {
+        onLogin();
+      } else {
+        alert("Ikke autorisert som admin");
+      }
+
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Feil e-post eller passord");
     }
   };
-
+  
   return (
     <div style={LoginPageStyles.container}>
       <form onSubmit={handleLogin} style={LoginPageStyles.form}>
         <h2>Login</h2>
         <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="E-post"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={LoginPageStyles.input}
         />
         <input
@@ -34,7 +56,7 @@ const LoginPage = ({ onLogin }) => {
           onChange={(e) => setPassword(e.target.value)}
           style={LoginPageStyles.input}
         />
-        <button type="submit" style={LoginPageStyles.button}>Sign In</button>
+        <button type="submit" style={LoginPageStyles.button}>Logg inn</button>
       </form>
     </div>
   );
