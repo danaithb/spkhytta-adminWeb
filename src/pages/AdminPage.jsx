@@ -46,17 +46,16 @@ const AdminPage = () => {
 
   const handleEditClick = (booking) => {
     setSelectedBooking(booking);
-    setCurrentTab(1); // Go to "Redigere Booking" tab
+    setCurrentTab(1);
   };
 
   const handleCancelEdit = () => {
     setSelectedBooking(null);
-    setCurrentTab(0); // Go back to "Booking Liste" tab
+    setCurrentTab(0);
   };
 
   const handleBookingUpdate = async (form) => {
     try {
-      // Prepare payload for backend
       const payload = {
         guestName: form.guestName,
         startDate: form.startDate,
@@ -64,16 +63,13 @@ const AdminPage = () => {
         status: form.status,
         price: form.price
       };
-
-      // Call backend API
+      
       const updated = await updateBooking(form.bookingId, payload);
-
-      // Update local state
+      
       setBookings(bookings.map(b =>
           b.bookingId === updated.bookingId ? updated : b
       ));
-
-      // Return to list view
+      
       setCurrentTab(0);
       setSelectedBooking(null);
     } catch (e) {
@@ -136,6 +132,7 @@ const AdminPage = () => {
             <MenuItem value="Pending">Påvente</MenuItem>
             <MenuItem value="Cancelled">Kansellert</MenuItem>
             <MenuItem value="Blocked">Blokket</MenuItem>
+            <MenuItem value="Waitlist">Venteliste</MenuItem>
           </Select>
         </FormControl>
         <Button variant="contained" onClick={() => setStatusFilter("")}>
@@ -152,7 +149,7 @@ const AdminPage = () => {
           textColor="primary"
         >
           <Tab label="Booking Liste" />
-          <Tab label="Redigere Booking" />
+          <Tab label="Opprett Booking" />
           <Tab label="Loddsystem"/>
           <Tab label="Administrer Booking"/>
         </Tabs>
@@ -163,13 +160,13 @@ const AdminPage = () => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper sx={{ p: 3, borderRadius: 2 }}>
+
               <BookingList
-                  bookings={bookings.filter(b =>
-                      statusFilter ? b.status === statusFilter : true
-                  )}
-                search={search}
-                handleEditClick={b => { setSelectedBooking(b); setCurrentTab(1); }}
-                handleDeleteClick={handleBookingDelete}
+                  bookings={bookings}
+                  search={search}
+                  statusFilter={statusFilter}
+                  handleEditClick={b => { setSelectedBooking(b); setCurrentTab(1); }}
+                  handleDeleteClick={handleBookingDelete}
               />
             </Paper>
           </Grid>
@@ -177,10 +174,10 @@ const AdminPage = () => {
       )}
 
       {/* Edit Booking Form */}
-      {currentTab === 1 && selectedBooking && (
+      {currentTab === 1 && (
           <BookingForm
-              selectedBooking={selectedBooking}
-              handleBookingUpdate={handleBookingUpdate}
+              selectedBooking={null}
+              handleBookingUpdate={handleBookingCreate}
               onCancel={() => setCurrentTab(0)}
           />
       )}
