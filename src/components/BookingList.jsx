@@ -1,22 +1,56 @@
-import React from "react";
 import { Box, Typography, Button, Chip } from "@mui/material";
-import Calendar from "react-calendar";  
+import Calendar from "react-calendar";
+import React, { useEffect, useState } from 'react';
+import { deleteBooking, updateBooking, createBookingForUser, fetchBookings } from "../api/admin";
+import BookingForm from "./BookingForm";
 
 const statusMapping = {
-  Pending: { label: "Påvente", color: "#FFD700" },
-  Confirmed: { label: "Bekreftet", color: "#4CAF50" },
-  Cancelled: { label: "Kansellert", color: "#E53935" },
-  Blocked: { label: "Blokkert", color: "#4C4C4C" },
-  Ukjent: { label: "Ukjent", color: "#4C4C4C" },
+  pending: { label: "Påvente", color: "#FFD700" },
+  confirmed: { label: "Bekreftet", color: "#4CAF50" },
+  cancelled: { label: "Kansellert", color: "#E53935" },
+  blocked: { label: "Blokkert", color: "#4C4C4C" },
+  waitlist: { label: "Venteliste", color: "#FF9800" },
+
 };
 
-const BookingList = ({ bookings, search, handleEditClick }) => {
-  return (
+const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {} }) => {
+  const [bookings, setBookings] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            const data = await fetchBookings();
+            setBookings(data);
+        };
+        fetchAll();
+    }, []);
+
+
+    const handleBookingUpdate = async (formData) => {
+        try {
+            if (selectedBooking) {
+                await updateBooking(selectedBooking.bookingId, formData);
+                alert("Booking oppdatert!");
+            } else {
+                await createBookingForUser(formData);
+                alert("Booking opprettet!");
+            }
+
+            const updated = await fetchBookings();
+            setBookings(updated);
+            setSelectedBooking(null); 
+        } catch (error) {
+            console.error("Feil ved lagring:", error);
+            alert("Kunne ikke lagre booking");
+        }
+    };
+
+    return (
+        <>
     <Box sx={{ 
       display: "flex",
       flexDirection: { xs: "column", md: "row" },
-      //width: "100%",
-      //maxWidth: 1400, 
       mx: "auto",
       mt: 3,
       px: { xs: 2, md: 6 },
@@ -33,7 +67,7 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
       {/* Booking List */}
       <Box sx={{ 
         width: { xs: "100%", md: "80%" },
-        flexGrow: 1, // Allow the Booking List to take more space
+        flexGrow: 1, 
         maxWidth: "100%",
         boxSizing: 'border-box'
       }}>
@@ -54,10 +88,11 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
           }}
         >
           {bookings
-            .filter((booking) =>
-              booking.guestName.toLowerCase().includes(search.toLowerCase())
-            )
-            .map((booking) => (
+              .filter((booking) =>
+                  booking.user?.name?.toLowerCase().includes(search.toLowerCase()) &&
+                  (statusFilter === "" || booking.status?.toLowerCase() === statusFilter.toLowerCase())
+              )
+              .map((booking) => (
               <Box
                 key={booking.id}
                 sx={{
@@ -72,14 +107,14 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
                   gap: 1.5,
                   width: "100%",
                   boxSizing: 'border-box',
-                  flexWrap: "wrap",  // Allow content to wrap if necessary
+                  flexWrap: "wrap",
                 }}
               >
                 {/* Left Content */}
                 <Box sx={{
                   flex: 1,
                   minWidth: 0,
-                  maxWidth: { xs: "100%", sm: "60%" }, // Ensure it's responsive
+                  maxWidth: { xs: "100%", sm: "60%" }, 
                   pr: 4,
                   overflow: 'hidden'
                 }}>
@@ -87,10 +122,21 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
                     fontWeight="bold" 
                     fontSize="14px" 
                     noWrap
+
                     sx={{ display: 'block' }}
                   >
-                    {booking.guestName}
+                      Navn: {booking.user?.name || "Ukjent"}
                   </Typography>
+
+                    <Typography
+                        fontSize="14px"
+                        fontWeight="bold"
+                        mt={0.5}
+                        noWrap
+                    >
+                        Fra {booking.startDate} til {booking.endDate}
+                    </Typography>
+
                   <Typography 
                     color="textSecondary" 
                     fontSize="12px" 
@@ -101,30 +147,44 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
                       overflow: 'hidden'
                     }}
                   >
-                    Fra {booking.startDate} til {booking.endDate}
+                      E-post: {booking.user?.email || "Ukjent"}
                   </Typography>
-                  <Typography 
-                    fontWeight="bold" 
-                    fontSize="14px" 
-                    mt={0.5}
-                    noWrap
+
+                    <Typography fontSize="12px" color="textSecondary" mt={0.5}>
+                        Bookingkode: {booking.bookingCode}
+                    </Typography>
+
+                  <Typography
+                      fontSize="12px"
+                      color="textSecondary"
+                      mt={0.5}
                   >
-                    Pris: {booking.price} NOK
+                      Pris: {booking.price} NOK
                   </Typography>
+
+                    <Typography
+                        fontSize="12px"
+                        color="textSecondary" mt={0.5}>
+                        Type: {booking.tripType === 'BUSINESS' ? 'Jobbreise' : 'Privat'}
+                    </Typography>
+                    <Typography fontSize="12px" color="textSecondary" mt={0.5}>
+                        Gjester: {booking.numberOfGuests}
+                    </Typography>
+
                 </Box>
 
-                {/* Right Content */}
+                  {/* Right Content */}
                 <Box sx={{
                   display: "flex", 
                   alignItems: "center",
                   gap: 1,
                   flexShrink: 0,
-                  width: { xs: '100%', sm: 'auto' } // Full width on mobile
+                  width: { xs: '100%', sm: 'auto' } 
                 }}>
                   <Chip
-                    label={statusMapping[booking.status]?.label || "Ukjent"}
+                    label={statusMapping[booking.status?.toLowerCase()]?.label || booking.status || "Ukjent"}
                     sx={{
-                      backgroundColor: statusMapping[booking.status]?.color || "#4C4C4C",
+                      backgroundColor: statusMapping[booking.status?.toLowerCase()]?.color || "#4C4C4C",
                       color: "white",
                       fontWeight: "bold",
                       fontSize: "12px",
@@ -147,7 +207,7 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
                       px: 1.5,
                       whiteSpace: 'nowrap'
                     }}
-                    onClick={() => handleEditClick(booking)}
+                    onClick={() => setSelectedBooking(booking)}
                   >
                     Rediger
                   </Button>
@@ -157,7 +217,19 @@ const BookingList = ({ bookings, search, handleEditClick }) => {
         </Box>
       </Box>
     </Box>
-  );
+
+          {/* Redigeringsskjema */}
+          {selectedBooking && (
+              <Box mt={4}>
+                  <BookingForm
+                      selectedBooking={selectedBooking}
+                      handleBookingUpdate={handleBookingUpdate}
+                      onCancel={() => setSelectedBooking(null)}
+                  />
+              </Box>
+          )}
+        </>
+    );
 };
 
 export default BookingList;
