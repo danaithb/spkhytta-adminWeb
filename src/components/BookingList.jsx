@@ -237,10 +237,7 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
                       px: 1.5,
                       whiteSpace: 'nowrap'
                     }}
-                    onClick={() => setSelectedBooking(booking)}
-                  >
-                    Rediger
-                  </Button>
+                    onClick={() => handleEditClick(booking)}>Rediger</Button>
                 </Box>
               </Box>
             ))}

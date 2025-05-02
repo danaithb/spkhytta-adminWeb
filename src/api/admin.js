@@ -99,7 +99,7 @@ export const fetchAvailability = async (month, cabinId) => {
     return await res.json();
 };
 
-/*
+
 export const updateBooking = async (bookingId, payload) => {
     const token = localStorage.getItem("token");
 
@@ -119,7 +119,7 @@ export const updateBooking = async (bookingId, payload) => {
 
     return await response.json();
 };
-*/
+
 
 export const fetchBookingsByPeriod = async (startDate, endDate, token) => {
     const response = await fetch("http://localhost:8080/api/admin/bookings-by-period", {
@@ -139,12 +139,12 @@ export const fetchBookingsByPeriod = async (startDate, endDate, token) => {
 };
 
 
-
+/*
 export const updateBooking = (bookingId, payload) =>
     axios.put(`${base}/edit-booking/${bookingId}`, payload, {
         headers: getAuthHeader(),
     }).then(res => res.data);
-
+*/
 export const createBookingForUser = (payload) =>
     axios.post(`${base}/bookings`, payload, {
         headers: getAuthHeader(),

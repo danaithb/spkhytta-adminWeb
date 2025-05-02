@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
   Button,
@@ -10,16 +10,29 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { fetchUsers, fetchCabins } from "../api/admin"; 
+import { fetchUsers, fetchCabins } from "../api/admin";
+import { updateBooking } from "../api/admin";
 
-const EditBookingForm = () => {
+const EditBookingForm = ({ booking, onCancel }) => {
   const [formData, setFormData] = useState({
-    name: "James Bond",
-    startDate: "2025-04-01",
-    endDate: "2025-04-05",
-    status: "Confirmed",
-    price: 2000,
+    name: "",
+    startDate: "",
+    endDate: "",
+    status: "",
+    price: 0,
   });
+
+  useEffect(() => {
+    if (booking) {
+      setFormData({
+        name: booking.user?.name || "",
+        startDate: booking.startDate,
+        endDate: booking.endDate,
+        status: booking.status,
+        price: booking.price,
+      });
+    }
+  }, [booking]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,6 +41,18 @@ const EditBookingForm = () => {
       [name]: value,
     }));
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateBooking(booking.bookingId, formData);
+      alert("Booking oppdatert!");
+    } catch (error) {
+      console.error("Oppdateringsfeil:", error);
+      alert("Feil ved oppdatering: " + error.message);
+    }
+  };
+
 
   return (
     <Paper
@@ -43,75 +68,75 @@ const EditBookingForm = () => {
         Rediger Booking
       </Typography>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextField
-          fullWidth
-          label="Guest Name"
-          value={formData.name}
-          name="name"
-          disabled
-          sx={{ mb: 2 }}
+            fullWidth
+            label="Guest Name"
+            value={formData.name}
+            name="name"
+            disabled
+            sx={{mb: 2}}
         />
 
         <TextField
-          fullWidth
-          type="date"
-          label="Start Date"
-          name="startDate"
-          InputLabelProps={{ shrink: true }}
-          value={formData.startDate}
-          onChange={handleChange}
-          required
-          sx={{ mb: 2 }}
-        />
-
-        <TextField
-          fullWidth
-          type="date"
-          label="End Date"
-          name="endDate"
-          InputLabelProps={{ shrink: true }}
-          value={formData.endDate}
-          onChange={handleChange}
-          required
-          sx={{ mb: 2 }}
-        />
-
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            name="status"
-            value={formData.status}
+            fullWidth
+            type="date"
+            label="Start Date"
+            name="startDate"
+            InputLabelProps={{shrink: true}}
+            value={formData.startDate}
             onChange={handleChange}
             required
+            sx={{mb: 2}}
+        />
+
+        <TextField
+            fullWidth
+            type="date"
+            label="End Date"
+            name="endDate"
+            InputLabelProps={{shrink: true}}
+            value={formData.endDate}
+            onChange={handleChange}
+            required
+            sx={{mb: 2}}
+        />
+
+        <FormControl fullWidth sx={{mb: 2}}>
+          <InputLabel>Status</InputLabel>
+          <Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              required
           >
-             <MenuItem value="Pending">Påvente</MenuItem>
-             <MenuItem value="Confirmed">Bekreftet</MenuItem>
-             <MenuItem value="Cancelled">Kansellert</MenuItem>
-             <MenuItem value="Blocked">Blokkert</MenuItem>
-             <MenuItem value="Waitlist">Venteliste</MenuItem>
+            <MenuItem value="Pending">Påvente</MenuItem>
+            <MenuItem value="Confirmed">Bekreftet</MenuItem>
+            <MenuItem value="Cancelled">Kansellert</MenuItem>
+            <MenuItem value="Blocked">Blokkert</MenuItem>
+            <MenuItem value="Waitlist">Venteliste</MenuItem>
           </Select>
         </FormControl>
 
         <TextField
-          fullWidth
-          type="number"
-          label="Price (NOK)"
-          name="price"
-          InputLabelProps={{ shrink: true }}
-          value={formData.price}
-          onChange={handleChange}
-          required
-          sx={{ mb: 2 }}
+            fullWidth
+            type="number"
+            label="Price (NOK)"
+            name="price"
+            InputLabelProps={{shrink: true}}
+            value={formData.price}
+            onChange={handleChange}
+            required
+            sx={{mb: 2}}
         />
 
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        <Box sx={{display: "flex", justifyContent: "space-between", mt: 2}}>
           <Button type="submit" variant="contained" color="primary">
             LAGRE
           </Button>
           <Button
-            variant="outlined"
-            sx={{ borderColor: "#C084FC", color: "#C084FC" }}
+              variant="outlined"
+              sx={{borderColor: "#C084FC", color: "#C084FC"}}
           >
             AVBRYT
           </Button>

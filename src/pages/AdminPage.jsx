@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import EditBookingForm from "../components/EditBookingForm";
 import {
   Box,
   Grid,
@@ -9,6 +10,7 @@ import {
   Tab,
   FormControl,
   InputLabel,
+  Typography,
   Select,
   MenuItem,
 } from "@mui/material";
@@ -21,7 +23,8 @@ import useAdminPageState from "../hooks/useAdminPageState";
 import BookingList from '../components/BookingList';
 import BookingForm from '../components/BookingForm';
 import LotteryPage from "../components/LotteryPage";
-import LogoutButton from "../components/LogoutButton"
+import LogoutButton from "../components/LogoutButton";
+
 
 const AdminPage = () => {
   const {
@@ -35,6 +38,8 @@ const AdminPage = () => {
     setCurrentTab,
     statusFilter,
     setStatusFilter,
+    activeTab,
+    SetActiveTab,
   } = useAdminPageState();
 
   const handleTabChange = (event, newValue) => {
@@ -179,7 +184,7 @@ const AdminPage = () => {
                   bookings={bookings}
                   search={search}
                   statusFilter={statusFilter}
-                  handleEditClick={b => { setSelectedBooking(b); setCurrentTab(1); }}
+                  handleEditClick={handleEditClick}
                   handleDeleteClick={handleBookingDelete}
               />
             </Paper>
@@ -187,15 +192,22 @@ const AdminPage = () => {
         </Grid>
       )}
 
-
+      
       {/* Edit Booking Form */}
-      {/*{currentTab === 1 && (
-          <BookingForm
-              selectedBooking={null}
-              handleBookingUpdate={handleBookingCreate}
-              onCancel={() => setCurrentTab(0)}
+      {currentTab === 1 && (
+          selectedBooking ? (
+          <EditBookingForm
+              booking={selectedBooking}
+              onCancel={handleCancelEdit}
           />
+          ) : (
+
+          <Box sx={{ p: 3 }}>
+              <Typography variant="body1">ingen bookinger valgt</Typography>
+              </Box>
+            )
       )}
+
       {/* Lodd - System */}
 
       {currentTab === 2 && (
