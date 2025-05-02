@@ -14,3 +14,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+export const getToken = async () => {
+    const user = auth.currentUser;
+    if (user) {
+        return await user.getIdToken();
+    } else {
+        throw new Error("Bruker er ikke logget inn");
+    }
+};
