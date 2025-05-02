@@ -26,16 +26,23 @@ export const fetchBookings = async () => {
 
 export const processBookings = async (cabinId, startDate, endDate) => {
     const token = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:8080/api/admin/process/${cabinId}`, {        
+    const res = await fetch(`http://localhost:8080/api/admin/process/${cabinId}`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ startDate, endDate }),
+        body: JSON.stringify({startDate, endDate}),
     });
-    if (!res.ok) throw new Error("Feil ved trekking");
-    return res.json();
+    const contentType = res.headers.get("Content-Type");
+    const isJson = contentType && contentType.includes("application/json");
+
+    if (!res.ok) {
+        const errorMsg = isJson ? await res.json() : await res.text();
+        throw new Error(errorMsg);
+    }
+
+    return isJson ? await res.json() : {};
 };
 
 export const fetchCabins = async () => {
@@ -67,6 +74,23 @@ export const fetchUsers = async () => {
     }
 
     return res.json();
+};
+
+export const fetchBookingsByPeriod = async (startDate, endDate, token) => {
+    const response = await fetch("http://localhost:8080/api/admin/bookings-by-period", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ startDate, endDate }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Kunne ikke hente bookinger for valgt tidsrom");
+    }
+
+    return await response.json();
 };
 
 
