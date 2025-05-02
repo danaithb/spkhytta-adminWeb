@@ -21,6 +21,7 @@ import useAdminPageState from "../hooks/useAdminPageState";
 import BookingList from '../components/BookingList';
 import BookingForm from '../components/BookingForm';
 import LotteryPage from "../components/LotteryPage";
+import LogoutButton from "../components/LogoutButton"
 
 const AdminPage = () => {
   const {
@@ -102,6 +103,12 @@ const AdminPage = () => {
     setBookings(bookings.filter(b => b.bookingId !== bookingId));
   };
 
+  // Sett inn Riktig Methode
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Adjust if needed
+    window.location.href = "/login";  // Or navigate programmatically
+  };
+
   return (
     <Box sx={{ maxWidth: "1200px", margin: "auto", padding: 3 }}>
       
@@ -116,6 +123,11 @@ const AdminPage = () => {
           sx={{ mr: 2 }}
         />
         <Button variant="contained">Søk</Button>
+      </Box>
+
+       {/* Logout Button BELOW search bar */}
+       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
+        <LogoutButton onLogout={handleLogout} />
       </Box>
 
       {/* Status filter dropdown */}
@@ -133,6 +145,8 @@ const AdminPage = () => {
             <MenuItem value="Cancelled">Kansellert</MenuItem>
             <MenuItem value="Blocked">Blokket</MenuItem>
             <MenuItem value="Waitlist">Venteliste</MenuItem>
+            <MenuItem value="Jobb">Jobb</MenuItem>
+            <MenuItem value="Private">Private</MenuItem>
           </Select>
         </FormControl>
         <Button variant="contained" onClick={() => setStatusFilter("")}>
@@ -149,9 +163,9 @@ const AdminPage = () => {
           textColor="primary"
         >
           <Tab label="Booking Liste" />
-          <Tab label="Opprett Booking" />
-          <Tab label="Loddsystem"/>
-          <Tab label="Administrer Booking"/>
+          <Tab label="Redigere Booking" />
+          <Tab label="LoddSystem" />
+          <Tab label="Opprett Booking"/>
         </Tabs>
       </Box>
 
@@ -173,21 +187,24 @@ const AdminPage = () => {
         </Grid>
       )}
 
+
       {/* Edit Booking Form */}
-      {currentTab === 1 && (
+      {/*{currentTab === 1 && (
           <BookingForm
               selectedBooking={null}
               handleBookingUpdate={handleBookingCreate}
               onCancel={() => setCurrentTab(0)}
           />
       )}
+      {/* Lodd - System */}
 
       {currentTab === 2 && (
           <LotteryPage bookings={bookings} />
       )}
 
 
-      {/* Administrer Booking */}
+      {/* Opprett Booking */}
+      
       {currentTab === 3 && (
           <BookingForm
               selectedBooking={null}

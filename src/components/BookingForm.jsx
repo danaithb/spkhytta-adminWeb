@@ -95,9 +95,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
         margin: "auto",
       }}
     >
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Opprett Booking
-      </Typography>
+      
 
       <form onSubmit={handleSubmit}>
 

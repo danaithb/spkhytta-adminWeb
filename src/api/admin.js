@@ -24,6 +24,8 @@ export const fetchBookings = async () => {
     return res.json();
 };
 
+
+
 export const processBookings = async (cabinId, startDate, endDate) => {
     const token = localStorage.getItem("token");
     const res = await fetch(`http://localhost:8080/api/admin/process/${cabinId}`, {

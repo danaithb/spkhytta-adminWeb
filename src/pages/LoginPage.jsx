@@ -25,19 +25,21 @@ const LoginPage = ({ onLogin }) => {
         },
       });
 
-
       if (response.ok) {
+        console.log("Backend authorized admin login");
         onLogin();
       } else {
+        const backendError = await response.text(); // get detailed backend message
+        console.error("Backend denied access:", backendError);
         alert("Ikke autorisert som admin");
       }
-
+  
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Feil e-post eller passord");
+      alert("Feil e-post eller passord (eller backend er nede)");
     }
   };
-  
+
   return (
     <div style={LoginPageStyles.container}>
       <form onSubmit={handleLogin} style={LoginPageStyles.form}>
@@ -64,5 +66,3 @@ const LoginPage = ({ onLogin }) => {
 
 
 export default LoginPage;
-
-
