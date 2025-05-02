@@ -105,8 +105,8 @@ const AdminPage = () => {
 
   // Sett inn Riktig Methode
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Adjust if needed
-    window.location.href = "/login";  // Or navigate programmatically
+    localStorage.removeItem("token"); 
+    window.location.href = "/login";  
   };
 
   return (
