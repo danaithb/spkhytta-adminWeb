@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Box, 
-  Typography, 
-  Button, 
-  Paper, 
-  TextField, 
-  Alert
-} from "@mui/material";
-import {fetchBookings} from "../api/admin";
+import {Box, Typography, Button, Paper, TextField, Alert} from "@mui/material";
+import { fetchBookings, processBookings, fetchBookingsByPeriod } from "../api/admin";
+import { getToken } from "../firebase";
 
 const formatDate = (dateStr) => {
+  if (!dateStr) return "Ukjent dato";
   const [year, month, day] = dateStr.split("-");
   return `${day}.${month}.${year}`;
 };
@@ -17,47 +12,56 @@ const formatDate = (dateStr) => {
 const LotteryPage = ({ bookings }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [filtered, setFiltered] = useState([]);
   const [winner, setWinner] = useState(null);
   const [error, setError] = useState("");
-
-  // Hent alle bookinger fra backend ved mount
-  useEffect(() => {
-    fetchBookings()
-        .then(setAllBookings)
-        .catch(console.error);
-  }, []);
+  const [allBookings, setAllBookings] = useState([]);
 
   useEffect(() => {
-    if (!startDate || !endDate) {
-      setFiltered([]);
-      return;
-    }
-    if (startDate > endDate) {
-      setError("Sluttdato må være etter startdato");
-      setFiltered([]);
-      return;
-    }
-    setError("");
-    setFiltered(
-        allBookings.filter(b =>
-            b.startDate >= startDate && b.endDate <= endDate
-        )
-    );
-  }, [startDate, endDate, allBookings]);
+    const fetchData = async () => {
+      if (!startDate || !endDate) {
+        setFiltered([]);
+        return;
+      }
 
+      if (startDate > endDate) {
+        setError("Sluttdato må være etter startdato");
+        setFiltered([]);
+        return;
+      }
+
+      try {
+        setError("");
+        const token = await getToken();
+        const data = await fetchBookingsByPeriod(startDate, endDate, token);
+        setFiltered(data);
+      } catch (err) {
+        setError("Kunne ikke hente bookinger for valgt tidsrom");
+        setFiltered([]);
+      }
+    };
+    fetchData();
+  }, [startDate, endDate]);
+  
   const handleProcess = async () => {
     if (filtered.length === 0) return;
     try {
-      // Bruk cabinId fra første booking i perioden
       const cabinId = filtered[0].cabin.cabinId;
-      // Kall backend-loddtrekning
       const result = await processBookings(cabinId, startDate, endDate);
+      console.log("Vinnerobjekt fra backend:", result);
+
+
+      if (!result || Object.keys(result).length === 0) {
+        alert("Ingen vinner ble valgt");
+        setWinner(null);
+        return;
+      }
+
       setWinner(result);
-      // Oppdater lokal liste
-      fetchBookings().then(setAllBookings).catch(console.error);
+      const updated = await fetchBookings();
+      setAllBookings(updated);
     } catch (e) {
-      alert(e.response?.data || e.message);
+        alert(e.response?.data || e.message);
     }
   };
 
@@ -97,7 +101,7 @@ const LotteryPage = ({ bookings }) => {
       )}
 
       {/* Booking List */}
-      {filteredUsers.length > 0 ? (
+      {filtered.length > 0 ? (
         <Box 
           sx={{ 
             maxHeight: 400, 
@@ -115,9 +119,9 @@ const LotteryPage = ({ bookings }) => {
               gap: 2
             }}
           >
-            {filteredUsers.map((user) => (
+            {filtered.map((user) => (
               <Paper key={user.id} sx={{ p: 2, borderRadius: 2 }}>
-                <Typography fontWeight="bold">{user.guestName}</Typography>
+                <Typography fontWeight="bold">{user.name}</Typography>
                 <Typography color="textSecondary" variant="body2">
                   Fra {formatDate(user.startDate)} til {formatDate(user.endDate)}
                 </Typography>
@@ -134,16 +138,16 @@ const LotteryPage = ({ bookings }) => {
       )}
 
       {/* Pick Winner Button */}
-      <Button
-          onClick={pickWinner}
-          disabled={!!error || filteredUsers.length === 0}
+        <Button
+            onClick={handleProcess}
+            disabled={!!error || filtered.length === 0}
           variant="contained"
           sx={{
             mt: 4,
             py: 1.5,
             fontSize: "16px",
             borderRadius: 2,
-            width: "100%"   // erstatter fullWidth
+            width: "100%"  
           }}
       >
         Trekk tilfeldig vinner
@@ -151,7 +155,7 @@ const LotteryPage = ({ bookings }) => {
 
 
       {/* Winner Display */}
-      {winner && (
+      {winner && winner.user && winner.startDate && (
         <Box sx={{ 
           mt: 6, 
           p: 4, 
@@ -160,7 +164,7 @@ const LotteryPage = ({ bookings }) => {
           backgroundColor: "#e8f5e9" 
         }}>
           <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
-            🎉 Vinner: {winner.guestName} 🎉
+            🎉 Vinner: {winner.user.name} 🎉
           </Typography>
           <Typography color="textSecondary">
             Fra {formatDate(winner.startDate)} til {formatDate(winner.endDate)}
