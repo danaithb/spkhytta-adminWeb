@@ -1,7 +1,7 @@
 import { Box, Typography, Button, Chip } from "@mui/material";
 import Calendar from "react-calendar";
 import React, { useEffect, useState } from 'react';
-import { deleteBooking, updateBooking, createBookingForUser, fetchBookings } from "../api/admin";
+import { deleteBooking, updateBooking, createBookingForUser, fetchBookings, fetchAvailability } from "../api/admin";
 import BookingForm from "./BookingForm";
 
 const statusMapping = {
@@ -16,6 +16,7 @@ const statusMapping = {
 const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {} }) => {
   const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [unavailableDates, setUnavailableDates] = useState([]);
 
 
     useEffect(() => {
@@ -24,6 +25,28 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
             setBookings(data);
         };
         fetchAll();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const today = new Date();
+                const month = today.toISOString().slice(0, 7);
+                const cabinId = 1;
+
+                const data = await fetchAvailability(month, cabinId);
+
+                const booked = data
+                    .filter(d => !d.available)
+                    .map(d => new Date(d.date));
+
+                setUnavailableDates(booked);
+            } catch (error) {
+                console.error("Feil ved henting av tilgjengelighet:", error);
+            }
+        };
+
+        fetchData();
     }, []);
 
 
@@ -61,7 +84,14 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
         width: { md: "30%" },
         display: { xs: "none", md: "block" }
       }}>
-        <Calendar />
+          <Calendar
+              tileDisabled={({ date }) =>
+                  unavailableDates.some(
+                      (d) => d.toDateString() === date.toDateString()
+                  )
+              }
+          />
+
       </Box>
 
       {/* Booking List */}

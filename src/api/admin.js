@@ -76,6 +76,49 @@ export const fetchUsers = async () => {
     return res.json();
 };
 
+export const fetchAvailability = async (month, cabinId) => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch("http://localhost:8080/api/calendar/availability", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            month,
+            cabinId,
+        }),
+    });
+
+    if (!res.ok) {
+        throw new Error("Kunne ikke hente kalenderdata");
+    }
+    return await res.json();
+};
+
+/*
+export const updateBooking = async (bookingId, payload) => {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`http://localhost:8080/api/admin/edit-booking/${bookingId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error);
+    }
+
+    return await response.json();
+};
+*/
+
 export const fetchBookingsByPeriod = async (startDate, endDate, token) => {
     const response = await fetch("http://localhost:8080/api/admin/bookings-by-period", {
         method: "POST",
