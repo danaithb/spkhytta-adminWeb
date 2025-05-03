@@ -95,7 +95,7 @@ const AdminPage = () => {
         businessTrip: form.businessTrip,
       };
       const newBooking = await createBookingForUser(payload);
-      setBookings([...bookings, newBooking]);
+      setBookings(prev => [...prev, newBooking]);
       setCurrentTab(0);
     } catch (e) {
       alert(e.response?.data || e.message);
@@ -107,8 +107,7 @@ const AdminPage = () => {
     await deleteBooking(bookingId);
     setBookings(bookings.filter(b => b.bookingId !== bookingId));
   };
-
-  // Sett inn Riktig Methode
+  
   const handleLogout = () => {
     localStorage.removeItem("token"); 
     window.location.href = "/login";  
