@@ -26,7 +26,7 @@ import LotteryPage from "../components/LotteryPage";
 import LogoutButton from "../components/LogoutButton";
 
 
-const AdminPage = () => {
+const AdminPage = ({ onLogout }) => {
   const {
     bookings,
     setBookings,
@@ -71,10 +71,10 @@ const AdminPage = () => {
       };
       
       const updated = await updateBooking(form.bookingId, payload);
-      
-      setBookings(bookings.map(b =>
-          b.bookingId === updated.bookingId ? updated : b
-      ));
+
+      setBookings(prev =>
+          prev.map(b => b.bookingId === updated.bookingId ? updated : b)
+      );
       
       setCurrentTab(0);
       setSelectedBooking(null);
@@ -108,10 +108,6 @@ const AdminPage = () => {
     setBookings(bookings.filter(b => b.bookingId !== bookingId));
   };
   
-  const handleLogout = () => {
-    localStorage.removeItem("token"); 
-    window.location.href = "/login";  
-  };
 
   return (
     <Box sx={{ maxWidth: "1200px", margin: "auto", padding: 3 }}>
@@ -131,7 +127,7 @@ const AdminPage = () => {
 
        {/* Logout Button BELOW search bar */}
        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
-        <LogoutButton onLogout={handleLogout} />
+         <LogoutButton onLogout={onLogout} />
       </Box>
 
       {/* Status filter dropdown */}
@@ -157,6 +153,8 @@ const AdminPage = () => {
           Clear Filter
         </Button>
       </Box>
+      
+
 
       {/* Tabs */}
       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
@@ -198,6 +196,7 @@ const AdminPage = () => {
           <EditBookingForm
               booking={selectedBooking}
               onCancel={handleCancelEdit}
+              onSave={handleBookingUpdate}
           />
           ) : (
 
@@ -210,7 +209,9 @@ const AdminPage = () => {
       {/* Lodd - System */}
 
       {currentTab === 2 && (
-          <LotteryPage bookings={bookings} />
+          <LotteryPage
+              bookings={bookings} onBookingsChange={setBookings}
+              />
       )}
 
 
