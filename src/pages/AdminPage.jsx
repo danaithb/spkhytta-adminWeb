@@ -202,7 +202,7 @@ const AdminPage = () => {
           ) : (
 
           <Box sx={{ p: 3 }}>
-              <Typography variant="body1">ingen bookinger valgt</Typography>
+              <Typography variant="body1">Velg en booking fra "BOOKING LISTE"</Typography>
               </Box>
             )
       )}
