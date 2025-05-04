@@ -9,11 +9,11 @@ const formatDate = (dateStr) => {
   return `${day}.${month}.${year}`;
 };
 
-const LotteryPage = ({ bookings }) => {
+const LotteryPage = ({ bookings, onBookingsChange }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filtered, setFiltered] = useState([]);
-  const [winner, setWinner] = useState(null);
+  const [winners, setWinners] = useState([]);
   const [error, setError] = useState("");
   const [allBookings, setAllBookings] = useState([]);
 
@@ -48,17 +48,21 @@ const LotteryPage = ({ bookings }) => {
     try {
       const cabinId = filtered[0].cabin.cabinId;
       const result = await processBookings(cabinId, startDate, endDate);
-      console.log("Vinnerobjekt fra backend:", result);
+      console.log("Vinnerliste fra backend:", result);
 
 
-      if (!result || Object.keys(result).length === 0) {
-        alert("Ingen vinner ble valgt");
-        setWinner(null);
+      if (!result || result.length === 0) {
+        alert("Ingen vinnere ble valgt");
+        setWinners([]);
         return;
       }
 
-      setWinner(result);
+      setWinners(result);
+
       const token = await getToken();
+      const all = await fetchBookings(token);
+      onBookingsChange(all);
+
       const data = await fetchBookingsByPeriod(startDate, endDate, token);
       setFiltered(data.filter((booking) => booking.status === "pending"));
     } catch (e) {
@@ -156,24 +160,38 @@ const LotteryPage = ({ bookings }) => {
 
 
       {/* Winner Display */}
-      {winner && winner.user && winner.startDate && (
-        <Box sx={{ 
-          mt: 6, 
-          p: 4, 
-          border: "1px solid #c8e6c9", 
-          borderRadius: 2, 
-          backgroundColor: "#e8f5e9" 
-        }}>
-          <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
-            🎉 Vinner: {winner.user.name} 🎉
-          </Typography>
-          <Typography color="textSecondary">
-            Fra {formatDate(winner.startDate)} til {formatDate(winner.endDate)}
-          </Typography>
-        </Box>
+      {winners.length > 0 && (
+          <Box sx={{ mt: 6 }}>
+            <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
+              🎉 Vinnere 🎉
+            </Typography>
+
+            {winners.map((winner, index) => (
+                <Box
+                    key={index}
+                    sx={{
+                      mb: 2,
+                      p: 3,
+                      border: "1px solid #c8e6c9",
+                      borderRadius: 2,
+                      backgroundColor: "#e8f5e9",
+                    }}
+                >
+                  <Typography variant="h6" fontWeight="bold">
+                    {winner.user?.name}
+                  </Typography>
+                  <Typography color="textSecondary">
+                    Fra {formatDate(winner.startDate)} til {formatDate(winner.endDate)}
+                  </Typography>
+                </Box>
+            ))}
+          </Box>
       )}
+
     </Paper>
-  );
+);
 };
 
 export default LotteryPage;
+
+
