@@ -5,7 +5,7 @@ import { deleteBooking, updateBooking, createBookingForUser, fetchBookings, fetc
 import BookingForm from "./BookingForm";
 
 const statusMapping = {
-  pending: { label: "Påvente", color: "#FFD700" },
+  pending: { label: "Påventer", color: "#FFD700" },
   confirmed: { label: "Bekreftet", color: "#4CAF50" },
   cancelled: { label: "Kansellert", color: "#E53935" },
   blocked: { label: "Blokkert", color: "#4C4C4C" },
@@ -17,57 +17,77 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
   const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [unavailableDates, setUnavailableDates] = useState([]);
-
+  const [activeStartDate, setActiveStartDate] = useState(new Date());
 
     useEffect(() => {
-        const fetchAll = async () => {
+        const loadBookings = async () => {
             const data = await fetchBookings();
             setBookings(data);
         };
-        fetchAll();
+        loadBookings();
     }, []);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const today = new Date();
-                const month = today.toISOString().slice(0, 7);
-                const cabinId = 1;
+        const fetchAvailabilityForNext3Months = async () => {
+            if (bookings.length === 0) return;
 
-                const data = await fetchAvailability(month, cabinId);
+            const cabinId = selectedBooking?.cabin?.cabinId || bookings.find(b => b.cabin)?.cabin?.cabinId;
+            if (!cabinId) return;
 
-                const booked = data
-                    .filter(d => !d.available)
-                    .map(d => new Date(d.date));
+            const allBookedDates = [];
 
-                setUnavailableDates(booked);
-            } catch (error) {
-                console.error("Feil ved henting av tilgjengelighet:", error);
+            for (let i = 0; i < 3; i++) {
+                const date = new Date(activeStartDate.getFullYear(), activeStartDate.getMonth() + i, 1);
+                const month = date.toISOString().slice(0, 7);
+
+                try {
+                    const availability = await fetchAvailability(month, cabinId);
+                    const bookedDates = availability
+                        .filter(day => day.status !== "available")
+                        .map(day => new Date(day.date));
+
+                    allBookedDates.push(...bookedDates);
+                } catch (error) {
+                    console.error(`Klarte ikke hente availability for ${month}:`, error);
+                }
             }
+
+            console.log("Samlede utilgjengelige datoer:", allBookedDates);
+            setUnavailableDates(allBookedDates);
         };
 
-        fetchData();
-    }, []);
+        fetchAvailabilityForNext3Months();
+    }, [activeStartDate, bookings, selectedBooking]);
 
-
+    
     const handleBookingUpdate = async (formData) => {
         try {
             if (selectedBooking) {
                 await updateBooking(selectedBooking.bookingId, formData);
                 alert("Booking oppdatert!");
-            } else {
-                await createBookingForUser(formData);
-                alert("Booking opprettet!");
-            }
 
-            const updated = await fetchBookings();
-            setBookings(updated);
-            setSelectedBooking(null); 
+                const updatedBookings = await fetchBookings();
+                setBookings(updatedBookings);
+
+                const currentMonth = activeStartDate.toISOString().slice(0, 7);
+                const selectedCabinId = formData.cabinId || selectedBooking?.cabin?.cabinId;
+
+                if (selectedCabinId) {
+                    const availability = await fetchAvailability(currentMonth, selectedCabinId);
+                    const bookedDates = availability
+                        .filter(day => day.status === "booked")
+                        .map(day => new Date(day.date));
+                    console.log("Oppdaterer unavailableDates:", bookedDates);
+                    setUnavailableDates(bookedDates);
+                }
+                setSelectedBooking(null);
+            }
         } catch (error) {
-            console.error("Feil ved lagring:", error);
-            alert("Kunne ikke lagre booking");
+            console.error("Feil ved oppdatering:", error);
+            alert("Det oppstod en feil ved oppdatering av booking.");
         }
     };
+    
 
     return (
         <>
@@ -85,11 +105,13 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
         display: { xs: "none", md: "block" }
       }}>
           <Calendar
+              activeStartDate={activeStartDate}
+              onActiveStartDateChange={({ activeStartDate }) => setActiveStartDate(activeStartDate)}
               tileDisabled={({ date }) =>
-                  unavailableDates.some(
-                      (d) => d.toDateString() === date.toDateString()
-                  )
+                  unavailableDates.some(d => d.toDateString() === date.toDateString())
               }
+
+
           />
 
       </Box>

@@ -1,156 +1,129 @@
-import axios from 'axios';
-const base = 'http://localhost:8080/api/admin';
+//source: https://github.com/kristiania-pg6301-2022/pg6301-react-and-express-lectures/blob/reference/12/client/lib/postJSON.jsx
+const API_BASE = "http://localhost:8080/api";
+
 
 function getAuthHeader() {
-    const token = localStorage.getItem('token'); 
-    console.log("Token som sendes:", token);
-    return { Authorization: `Bearer ${token}` };
+    const token = localStorage.getItem('token');
+    return {
+        Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+    };
 }
 
 
-export const fetchBookings = async () => {
+export async function fetchBookings() {
     const token = localStorage.getItem("token");
-    console.log("Token som sendes:", token);
-    const res = await fetch("http://localhost:8080/api/admin/bookings", {
+    const res = await fetch(`${API_BASE}/admin/bookings`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
-
-    if (!res.ok) {
-        throw new Error("Feil ved henting");
-    }
-
+    if (!res.ok) throw new Error("Feil ved henting");
     return res.json();
 };
 
-
-
-export const processBookings = async (cabinId, startDate, endDate) => {
+export async function processBookings(cabinId, startDate, endDate) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:8080/api/admin/process/${cabinId}`, {
+    const res = await fetch(`${API_BASE}/admin/process/${cabinId}`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
-        },
+    },
         body: JSON.stringify({startDate, endDate}),
     });
-    const contentType = res.headers.get("Content-Type");
-    const isJson = contentType && contentType.includes("application/json");
-
-    if (!res.ok) {
-        const errorMsg = isJson ? await res.json() : await res.text();
-        throw new Error(errorMsg);
-    }
-
-    return isJson ? await res.json() : {};
+    if (!res.ok) throw new Error("Feil ved prosessering");
+    return res.json();
 };
 
-export const fetchCabins = async () => {
+export async function fetchCabins() {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:8080/api/admin/all-cabins", {
+    const res = await fetch(`${API_BASE}/admin/all-cabins`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
-
-    if (!res.ok) {
-        throw new Error("Kunne ikke hente hytter");
-    }
-
-    return res.json();
-};
+    if (!res.ok) throw new Error("Kunne ikke hente hytter");
+    return await res.json();
+    };
 
 
-export const fetchUsers = async () => {
+export async function fetchUsers() {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:8080/api/admin/all-users", {
+    const res = await fetch(`${API_BASE}/admin/all-users`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     });
-
-    if (!res.ok) {
-        throw new Error("Kunne ikke hente brukere");
-    }
-
-    return res.json();
+    if (!res.ok) throw new Error("Kunne ikke hente brukere");
+    return await res.json();
 };
 
-export const fetchAvailability = async (month, cabinId) => {
+export async function fetchAvailability(month, cabinId) {
     const token = localStorage.getItem("token");
-
-    const res = await fetch("http://localhost:8080/api/calendar/availability", {
+    const res = await fetch(`${API_BASE}/calendar/availability`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            month,
-            cabinId,
-        }),
+        body: JSON.stringify({ month, cabinId }),
     });
-
-    if (!res.ok) {
-        throw new Error("Kunne ikke hente kalenderdata");
-    }
+    if (!res.ok) throw new Error("Kunne ikke hente kalenderdata");
     return await res.json();
 };
 
 
-export const updateBooking = async (bookingId, payload) => {
+export async function updateBooking (bookingId, payload) {
     const token = localStorage.getItem("token");
-
-    const response = await fetch(`http://localhost:8080/api/admin/edit-booking/${bookingId}`, {
+    const res = await fetch(`${API_BASE}/admin/edit-booking/${bookingId}`, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
     });
-
-    if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-    }
-
-    return await response.json();
+    if (!res.ok) throw new Error("Kunne ikke oppdatere booking");
+    return await res.json();
 };
 
-
-export const fetchBookingsByPeriod = async (startDate, endDate, token) => {
-    const response = await fetch("http://localhost:8080/api/admin/bookings-by-period", {
+export async function fetchBookingsByPeriod(startDate, endDate, token) {
+    const res = await fetch(`${API_BASE}/admin/bookings-by-period`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({ startDate, endDate }),
     });
 
-    if (!response.ok) {
-        throw new Error("Kunne ikke hente bookinger for valgt tidsrom");
-    }
-
-    return await response.json();
+    if (!res.ok) throw new Error("Kunne ikke hente bookinger for valgt tidsrom");
+    return await res.json();
 };
 
+export async function createBookingForUser(payload) {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE}/admin/bookings`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Kunne ikke opprette booking");
+    return await res.json();
+};
 
-/*
-export const updateBooking = (bookingId, payload) =>
-    axios.put(`${base}/edit-booking/${bookingId}`, payload, {
-        headers: getAuthHeader(),
-    }).then(res => res.data);
-*/
-export const createBookingForUser = (payload) =>
-    axios.post(`${base}/bookings`, payload, {
-        headers: getAuthHeader(),
-    }).then(res => res.data);
-
-export const deleteBooking = (bookingId) =>
-    axios.delete(`${base}/bookings/${bookingId}`, {
-        headers: getAuthHeader(),
-    }).then(res => res.data);
+export async function deleteBooking (bookingId) {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${API_BASE}/admin/bookings/${bookingId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!res.ok) throw new Error("Kunne ikke slette booking");
+    return await res.json();
+};
