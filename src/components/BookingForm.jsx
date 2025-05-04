@@ -32,9 +32,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
         })
         .catch((err) => console.error("Klarte ikke hente hytter:", err));
   }, []);
-
-
-
+  
   useEffect(() => {
   if (selectedBooking) {
     setFormData({
@@ -220,7 +218,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
                 <MenuItem value="business">Jobbtur</MenuItem>
               </Select>
             </FormControl>
-        {/* Price field, shown only if status is not "Blokkert" */}
+       
         {formData.status !== "Blocked" && (
           <TextField
             fullWidth
