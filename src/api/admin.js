@@ -1,5 +1,5 @@
 //source: https://github.com/kristiania-pg6301-2022/pg6301-react-and-express-lectures/blob/reference/12/client/lib/postJSON.jsx
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "https://hytteportalen-307333592311.europe-west1.run.app";
 
 
 function getAuthHeader() {
