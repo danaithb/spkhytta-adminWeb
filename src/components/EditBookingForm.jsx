@@ -13,7 +13,7 @@ import {
 import { fetchUsers, fetchCabins } from "../api/admin";
 import { updateBooking } from "../api/admin";
 
-const EditBookingForm = ({ booking, onCancel }) => {
+const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
   const [formData, setFormData] = useState({
     name: "",
     startDate: "",
@@ -22,17 +22,36 @@ const EditBookingForm = ({ booking, onCancel }) => {
     price: 0,
   });
 
+  const [conflict, setConflict] = useState(false);
+
   useEffect(() => {
     if (booking) {
       setFormData({
-        name: booking.user?.name || "",
+        name:      booking.user?.name  || "",
         startDate: booking.startDate,
-        endDate: booking.endDate,
-        status: booking.status,
-        price: booking.price,
+        endDate:   booking.endDate,
+        status:    booking.status,
+        price:     booking.price,
       });
     }
   }, [booking]);
+
+  const hasConflict = () => {
+    if (!bookings || bookings.length === 0) return false;
+
+    return bookings.some((b) =>
+        b.bookingId !== booking.bookingId &&
+        b.status === "Confirmed" &&
+        !(new Date(b.endDate) < new Date(formData.startDate) ||
+            new Date(b.startDate) > new Date(formData.endDate))
+    );
+  };
+
+
+  useEffect(() => {
+    setConflict(hasConflict());
+  }, [formData.startDate, formData.endDate, bookings]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,8 +63,18 @@ const EditBookingForm = ({ booking, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (conflict) {
+      alert("Datoene overlapper en allerede bekreftet booking!");
+      return;
+    }
     try {
-      await updateBooking(booking.bookingId, formData);
+      const updated = await updateBooking(booking.bookingId, {
+        startDate: formData.startDate,
+        endDate:   formData.endDate,
+        status:    formData.status,
+        price:     formData.price,
+      });
+      onSave && onSave(updated);
       alert("Booking oppdatert!");
     } catch (error) {
       console.error("Oppdateringsfeil:", error);
@@ -101,6 +130,12 @@ const EditBookingForm = ({ booking, onCancel }) => {
             required
             sx={{mb: 2}}
         />
+        
+        {conflict && (
+            <Typography color="error" sx={{ mb:2 }}>
+              Datoene overlapper en annen bekreftet booking!
+            </Typography>
+        )}
 
         <FormControl fullWidth sx={{mb: 2}}>
           <InputLabel>Status</InputLabel>
@@ -137,6 +172,7 @@ const EditBookingForm = ({ booking, onCancel }) => {
           <Button
               variant="outlined"
               sx={{borderColor: "#C084FC", color: "#C084FC"}}
+              onClick={onCancel}
           >
             AVBRYT
           </Button>
