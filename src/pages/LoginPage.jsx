@@ -18,7 +18,7 @@ const LoginPage = ({ onLogin }) => {
       localStorage.setItem("token", token);
       console.log("Token lagret:", token);
 
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch("https://hytteportalen-307333592311.europe-west1.run.app/api/auth/login", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
