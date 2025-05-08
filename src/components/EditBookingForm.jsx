@@ -36,22 +36,16 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
     }
   }, [booking]);
 
-  const hasConflict = () => {
-    if (!bookings || bookings.length === 0) return false;
-
-    return bookings.some((b) =>
+  useEffect(() => {
+    const conflictExists = bookings?.some((b) =>
         b.bookingId !== booking.bookingId &&
         b.status === "Confirmed" &&
         !(new Date(b.endDate) < new Date(formData.startDate) ||
             new Date(b.startDate) > new Date(formData.endDate))
     );
-  };
 
-
-  useEffect(() => {
-    setConflict(hasConflict());
-  }, [formData.startDate, formData.endDate, bookings, hasConflict]);
-
+    setConflict(conflictExists);
+  }, [formData.startDate, formData.endDate, bookings, booking.bookingId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
