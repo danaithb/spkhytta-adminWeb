@@ -15,20 +15,33 @@ const statusMapping = {
 
 };
 
-const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {} }) => {
+/*const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {} }) => {
   const [bookings, setBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [unavailableDates, setUnavailableDates] = useState([]);
   const [activeStartDate, setActiveStartDate] = useState(new Date());
-  const [error, setError] = useState("");
+  const [error, setError] = useState("");*/
 
+const BookingList = ({
+                         bookings = [],
+                         setBookings = () => {},
+                         search = "",
+                         statusFilter = "",
+                         handleEditClick = () => {}
+                     }) => {
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [unavailableDates, setUnavailableDates] = useState([]);
+    const [activeStartDate, setActiveStartDate] = useState(new Date());
+    const [error, setError] = useState("");
+
+/*
     useEffect(() => {
         const loadBookings = async () => {
             const data = await fetchBookings();
             setBookings(data);
         };
         loadBookings();
-    }, []);
+    }, []);*/
 
     useEffect(() => {
         const fetchAvailabilityForNext3Months = async () => {

@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from "react";
 import EditBookingForm from "../components/EditBookingForm";
+
+
 import {
   Box,
   Grid,
@@ -17,7 +19,7 @@ import {
 } from "@mui/material";
 
 import {
-  updateBooking,
+  updateBooking, fetchBookings,
   createBookingForUser, deleteBooking
 } from '../api/admin';
 import useAdminPageState from "../hooks/useAdminPageState";
@@ -102,7 +104,7 @@ const AdminPage = ({ onLogout }) => {
   };
 
 
-  const handleBookingCreate = async (form) => {
+  /*const handleBookingCreate = async (form) => {
     try {
       const payload = {
         userId: form.userId,
@@ -118,7 +120,38 @@ const AdminPage = ({ onLogout }) => {
     } catch (e) {
       setError(e.response?.data || e.message);
     }
+  };*/
+  const handleBookingCreate = async (form) => {
+    try {
+      const payload = {
+        userId: form.userId,
+        cabinId: form.cabinId,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        numberOfGuests: form.numberOfGuests,
+        businessTrip: form.businessTrip,
+      };
+
+      const newBooking = await createBookingForUser(payload);
+
+      const allBookings = await fetchBookings();
+      setBookings(allBookings);
+      setSearch("");
+      setStatusFilter("");
+
+
+      setSelectedBooking(null);
+      setCurrentTab(0);
+      setTimeout(() => {
+        setSuccess("Booking opprettet!");
+      }, 100);
+      setError("");
+    } catch (e) {
+      setError(e.response?.data || e.message);
+      setSuccess("");
+    }
   };
+
 
   const handleBookingDelete = async (bookingId) => {
     if (!window.confirm('Er du sikker?')) return;
