@@ -2,13 +2,14 @@
 const API_BASE = "https://hytteportalen-307333592311.europe-west1.run.app";
 
 
+/*brukes ikke
 function getAuthHeader() {
     const token = localStorage.getItem('token');
     return {
         Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
     };
-}
+}*/
 
 
 export async function fetchBookings() {
