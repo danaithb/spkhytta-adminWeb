@@ -1,7 +1,7 @@
 import { Box, Typography, Button, Chip } from "@mui/material";
 import Calendar from "react-calendar";
 import React, { useEffect, useState } from 'react';
-import { deleteBooking, updateBooking, createBookingForUser, fetchBookings, fetchAvailability } from "../api/admin";
+import { updateBooking, fetchBookings, fetchAvailability } from "../api/admin";
 import BookingForm from "./BookingForm";
 
 const statusMapping = {

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import EditBookingForm from "../components/EditBookingForm";
 import {
   Box,
@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 
 import {
-  fetchBookings, updateBooking,
+  updateBooking,
   createBookingForUser, deleteBooking
 } from '../api/admin';
 import useAdminPageState from "../hooks/useAdminPageState";
@@ -38,17 +38,16 @@ const AdminPage = ({ onLogout }) => {
     setCurrentTab,
     statusFilter,
     setStatusFilter,
-    activeTab,
-    SetActiveTab,
   } = useAdminPageState();
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
   };
 
+  /* ikke brukt
   const handleStatusChange = (event) => {
     setStatusFilter(event.target.value);
-  };
+  };*/
 
   const handleEditClick = (booking) => {
     setSelectedBooking(booking);

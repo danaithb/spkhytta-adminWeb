@@ -10,7 +10,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { fetchUsers, fetchCabins } from "../api/admin";
+
 import { updateBooking } from "../api/admin";
 
 const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
@@ -50,7 +50,7 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
 
   useEffect(() => {
     setConflict(hasConflict());
-  }, [formData.startDate, formData.endDate, bookings]);
+  }, [formData.startDate, formData.endDate, bookings, hasConflict]);
 
 
   const handleChange = (e) => {
