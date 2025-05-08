@@ -23,7 +23,7 @@ function App() {
         localStorage.setItem("token", token);
         setIsLoggedIn(true);
       } else {
-        localStorage.fremoveItem("token");
+        localStorage.removeItem("token");
         setIsLoggedIn(false);
       }
     });
