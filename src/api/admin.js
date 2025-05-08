@@ -13,7 +13,7 @@ function getAuthHeader() {
 
 export async function fetchBookings() {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/bookings`, {
+    const res = await fetch(`${API_BASE}/api/admin/bookings`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -24,7 +24,7 @@ export async function fetchBookings() {
 
 export async function processBookings(cabinId, startDate, endDate) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/process/${cabinId}`, {
+    const res = await fetch(`${API_BASE}/api/admin/process/${cabinId}`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ export async function processBookings(cabinId, startDate, endDate) {
 
 export async function fetchCabins() {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/all-cabins`, {
+    const res = await fetch(`${API_BASE}/api/admin/all-cabins`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -50,7 +50,7 @@ export async function fetchCabins() {
 
 export async function fetchUsers() {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/all-users`, {
+    const res = await fetch(`${API_BASE}/api/admin/all-users`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -61,7 +61,7 @@ export async function fetchUsers() {
 
 export async function fetchAvailability(month, cabinId) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/calendar/availability`, {
+    const res = await fetch(`${API_BASE}/api/calendar/availability`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
@@ -76,7 +76,7 @@ export async function fetchAvailability(month, cabinId) {
 
 export async function updateBooking (bookingId, payload) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/edit-booking/${bookingId}`, {
+    const res = await fetch(`${API_BASE}/api/admin/edit-booking/${bookingId}`, {
         method: "PUT",
         headers: {
             Authorization: `Bearer ${token}`,
@@ -89,7 +89,7 @@ export async function updateBooking (bookingId, payload) {
 };
 
 export async function fetchBookingsByPeriod(startDate, endDate, token) {
-    const res = await fetch(`${API_BASE}/admin/bookings-by-period`, {
+    const res = await fetch(`${API_BASE}/api/admin/bookings-by-period`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
@@ -104,7 +104,7 @@ export async function fetchBookingsByPeriod(startDate, endDate, token) {
 
 export async function createBookingForUser(payload) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/bookings`, {
+    const res = await fetch(`${API_BASE}/api/admin/bookings`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${token}`,
@@ -118,7 +118,7 @@ export async function createBookingForUser(payload) {
 
 export async function deleteBooking (bookingId) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/admin/bookings/${bookingId}`, {
+    const res = await fetch(`${API_BASE}/api/api/admin/bookings/${bookingId}`, {
         method: "DELETE",
         headers: {
             Authorization: `Bearer ${token}`,
