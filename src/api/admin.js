@@ -118,7 +118,7 @@ export async function createBookingForUser(payload) {
 
 export async function deleteBooking (bookingId) {
     const token = localStorage.getItem("token");
-    const res = await fetch(`${API_BASE}/api/api/admin/bookings/${bookingId}`, {
+    const res = await fetch(`${API_BASE}/api/admin/bookings/${bookingId}`, {
         method: "DELETE",
         headers: {
             Authorization: `Bearer ${token}`,
