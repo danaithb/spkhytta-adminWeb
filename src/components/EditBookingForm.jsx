@@ -13,7 +13,7 @@ import {
 
 import { updateBooking } from "../api/admin";
 
-const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
+const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setError }) => {
   const [formData, setFormData] = useState({
     name: "",
     startDate: "",
@@ -58,7 +58,16 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (conflict) {
-      alert("Datoene overlapper en allerede bekreftet booking!");
+      setError("Datoene overlapper en allerede bekreftet booking!");
+      return;
+    }
+    const isSame =
+        formData.startDate === booking.startDate &&
+        formData.endDate === booking.endDate &&
+        formData.status === booking.status &&
+        formData.price === booking.price;
+    if (isSame) {
+      setError("Ingen endringer oppdaget.");
       return;
     }
     try {
@@ -69,10 +78,11 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave }) => {
         price:     formData.price,
       });
       onSave && onSave(updated);
-      alert("Booking oppdatert!");
+      setSuccess("Booking oppdatert!");
+      setError("");
     } catch (error) {
       console.error("Oppdateringsfeil:", error);
-      alert("Feil ved oppdatering: " + error.message);
+      setError("Feil ved oppdatering: " + error.message);
     }
   };
 

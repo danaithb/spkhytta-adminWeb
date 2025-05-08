@@ -6,6 +6,8 @@ import { auth } from "../firebase";
 const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState("");
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,12 +33,12 @@ const LoginPage = ({ onLogin }) => {
       } else {
         const backendError = await response.text(); // get detailed backend message
         console.error("Backend denied access:", backendError);
-        alert("Ikke autorisert som admin");
+        setError("Ikke autorisert som admin");
       }
   
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Feil e-post eller passord (eller backend er nede)");
+      setError("Feil e-post eller passord (eller backend er nede)");
     }
   };
 
