@@ -44,11 +44,6 @@ const AdminPage = ({ onLogout }) => {
     setCurrentTab(newValue);
   };
 
-  /* ikke brukt
-  const handleStatusChange = (event) => {
-    setStatusFilter(event.target.value);
-  };*/
-
   const handleEditClick = (booking) => {
     setSelectedBooking(booking);
     setCurrentTab(1);

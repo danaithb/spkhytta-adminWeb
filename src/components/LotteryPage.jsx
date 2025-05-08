@@ -15,7 +15,6 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
   const [filtered, setFiltered] = useState([]);
   const [winners, setWinners] = useState([]);
   const [error, setError] = useState("");
-  //const [allBookings, setAllBookings] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
