@@ -132,7 +132,7 @@ const AdminPage = ({ onLogout }) => {
         businessTrip: form.businessTrip,
       };
 
-      const newBooking = await createBookingForUser(payload);
+      await createBookingForUser(payload);
 
       const allBookings = await fetchBookings();
       setBookings(allBookings);
