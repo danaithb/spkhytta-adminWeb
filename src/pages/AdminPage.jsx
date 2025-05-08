@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import EditBookingForm from "../components/EditBookingForm";
 import {
   Box,
@@ -13,6 +13,7 @@ import {
   Typography,
   Select,
   MenuItem,
+    Alert,
 } from "@mui/material";
 
 import {
@@ -27,6 +28,8 @@ import LogoutButton from "../components/LogoutButton";
 
 
 const AdminPage = ({ onLogout }) => {
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
   const {
     bookings,
     setBookings,
@@ -39,8 +42,14 @@ const AdminPage = ({ onLogout }) => {
     statusFilter,
     setStatusFilter,
     activeTab,
-    SetActiveTab,
+    SetActiveTab
+
   } = useAdminPageState();
+
+  useEffect(() => {
+    setSuccess("");
+    setError("");
+  }, [currentTab]);
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
@@ -61,6 +70,18 @@ const AdminPage = ({ onLogout }) => {
   };
 
   const handleBookingUpdate = async (form) => {
+    const isSame =
+        form.startDate === selectedBooking?.startDate &&
+        form.endDate === selectedBooking?.endDate &&
+        form.status === selectedBooking?.status &&
+        form.price === selectedBooking?.price;
+
+    if (isSame) {
+      setSuccess("");
+      setError("Ingen endringer oppdaget.");
+      return;
+    }
+
     try {
       const payload = {
         guestName: form.guestName,
@@ -75,11 +96,15 @@ const AdminPage = ({ onLogout }) => {
       setBookings(prev =>
           prev.map(b => b.bookingId === updated.bookingId ? updated : b)
       );
-      
-      setCurrentTab(0);
       setSelectedBooking(null);
+      setCurrentTab(0); 
+      setTimeout(() => {
+        setSuccess("Booking oppdatert!"); 
+      }, 100);
+      setError("");
     } catch (e) {
-      alert(e.response?.data || e.message);
+      setError(e.response?.data || e.message);
+      setSuccess("");
     }
   };
 
@@ -98,7 +123,7 @@ const AdminPage = ({ onLogout }) => {
       setBookings(prev => [...prev, newBooking]);
       setCurrentTab(0);
     } catch (e) {
-      alert(e.response?.data || e.message);
+      setError(e.response?.data || e.message);
     }
   };
 
@@ -176,13 +201,19 @@ const AdminPage = ({ onLogout }) => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Paper sx={{ p: 3, borderRadius: 2 }}>
-
+              {success && (
+                  <Box sx={{ mb: 2 }}>
+                    <Alert severity="success">{success}</Alert>
+                  </Box>
+              )}
               <BookingList
                   bookings={bookings}
                   search={search}
                   statusFilter={statusFilter}
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleBookingDelete}
+                  success={success}
+                  setSuccess={setSuccess}
               />
             </Paper>
           </Grid>
@@ -193,11 +224,21 @@ const AdminPage = ({ onLogout }) => {
       {/* Edit Booking Form */}
       {currentTab === 1 && (
           selectedBooking ? (
+              <Box>
+                {error && (
+                    <Box sx={{ mb: 2 }}>
+                      <Alert severity="error">{error}</Alert>
+                    </Box>
+                )}
           <EditBookingForm
               booking={selectedBooking}
+              bookings={bookings}
               onCancel={handleCancelEdit}
               onSave={handleBookingUpdate}
+              setSuccess={setSuccess}
+              setError={setError}
           />
+              </Box>
           ) : (
 
           <Box sx={{ p: 3 }}>

@@ -52,7 +52,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
 
 
       if (!result || result.length === 0) {
-        alert("Ingen vinnere ble valgt");
+        setError("Ingen vinnere ble valgt");
         setWinners([]);
         return;
       }
@@ -66,7 +66,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
       const data = await fetchBookingsByPeriod(startDate, endDate, token);
       setFiltered(data.filter((booking) => booking.status === "pending"));
     } catch (e) {
-        alert(e.response?.data || e.message);
+      setError(e.response?.data || e.message);
     }
   };
 

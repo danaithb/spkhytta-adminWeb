@@ -3,6 +3,8 @@ import Calendar from "react-calendar";
 import React, { useEffect, useState } from 'react';
 import { deleteBooking, updateBooking, createBookingForUser, fetchBookings, fetchAvailability } from "../api/admin";
 import BookingForm from "./BookingForm";
+import { Alert } from "@mui/material";
+
 
 const statusMapping = {
   pending: { label: "Påventer", color: "#FFD700" },
@@ -64,7 +66,6 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
         try {
             if (selectedBooking) {
                 await updateBooking(selectedBooking.bookingId, formData);
-                alert("Booking oppdatert!");
 
                 const updatedBookings = await fetchBookings();
                 setBookings(updatedBookings);
@@ -84,7 +85,7 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
             }
         } catch (error) {
             console.error("Feil ved oppdatering:", error);
-            alert("Det oppstod en feil ved oppdatering av booking.");
+            setError("Det oppstod en feil ved oppdatering av booking.");
         }
     };
     
@@ -99,11 +100,15 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
       px: { xs: 2, md: 6 },
       gap: 3
     }}>
-      {/* Calendar - Hidden on mobile */}
+
+
+
+        {/* Calendar - Hidden on mobile */}
       <Box sx={{
         width: { md: "30%" },
         display: { xs: "none", md: "block" }
       }}>
+
           <Calendar
               activeStartDate={activeStartDate}
               onActiveStartDateChange={({ activeStartDate }) => setActiveStartDate(activeStartDate)}
@@ -270,6 +275,12 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
           {/* Redigeringsskjema */}
           {selectedBooking && (
               <Box mt={4}>
+                  )}
+                  {error && (
+                      <Alert severity="error" sx={{ mb: 2 }}>
+                          {error}
+                      </Alert>
+                  )}
                   <BookingForm
                       selectedBooking={selectedBooking}
                       handleBookingUpdate={handleBookingUpdate}
