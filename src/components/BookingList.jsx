@@ -20,6 +20,7 @@ const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [unavailableDates, setUnavailableDates] = useState([]);
   const [activeStartDate, setActiveStartDate] = useState(new Date());
+  const [error, setError] = useState("");
 
     useEffect(() => {
         const loadBookings = async () => {
