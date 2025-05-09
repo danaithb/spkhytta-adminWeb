@@ -42,6 +42,8 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       status: selectedBooking.status,
       price: selectedBooking.price,
       cabinId: selectedBooking.cabin?.cabinId || "",
+      numberOfGuests: selectedBooking.numberOfGuests || 0,
+      businessTrip: selectedBooking.tripType === "BUSINESS",
     });
   }
 }, [selectedBooking]);
@@ -183,8 +185,6 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             <MenuItem value="Cancelled">Kansellert</MenuItem>
             <MenuItem value="Blocked">Blokkert</MenuItem>
             <MenuItem value="Waitlist">Venteliste</MenuItem>
-            <MenuItem value="Jobb">Jobb</MenuItem>
-            <MenuItem value="Private">Private</MenuItem>
           </Select>
         </FormControl>
 
