@@ -130,6 +130,8 @@ const AdminPage = ({ onLogout }) => {
         endDate: form.endDate,
         numberOfGuests: form.numberOfGuests,
         businessTrip: form.businessTrip,
+        status: form.status,
+        price: form.price,
       };
 
       await createBookingForUser(payload);
