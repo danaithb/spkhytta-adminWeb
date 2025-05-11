@@ -80,7 +80,7 @@ export async function updateBooking (bookingId, payload) {
     return await res.json();
 };
 
-export async function fetchBookingsByPeriod(startDate, endDate, token) {
+export async function fetchBookingsByPeriod(startDate, endDate) {
     const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/bookings-by-period`, {
         method: "POST",
