@@ -1,9 +1,10 @@
 //source: https://github.com/kristiania-pg6301-2022/pg6301-react-and-express-lectures/blob/reference/12/client/lib/postJSON.jsx
+import { getToken } from "../lib/auth";
 const API_BASE = "https://hytteportalen-307333592311.europe-west1.run.app";
 
 
 export async function fetchBookings() {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/bookings`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -14,7 +15,7 @@ export async function fetchBookings() {
 };
 
 export async function processBookings(cabinId, startDate, endDate) {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/process/${cabinId}`, {
         method: "POST",
         headers: {
@@ -28,7 +29,7 @@ export async function processBookings(cabinId, startDate, endDate) {
 };
 
 export async function fetchCabins() {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/all-cabins`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -40,7 +41,7 @@ export async function fetchCabins() {
 
 
 export async function fetchUsers() {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/all-users`, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -51,7 +52,7 @@ export async function fetchUsers() {
 };
 
 export async function fetchAvailability(month, cabinId) {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/calendar/availability`, {
         method: "POST",
         headers: {
@@ -66,7 +67,7 @@ export async function fetchAvailability(month, cabinId) {
 
 
 export async function updateBooking (bookingId, payload) {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/edit-booking/${bookingId}`, {
         method: "PUT",
         headers: {
@@ -80,6 +81,7 @@ export async function updateBooking (bookingId, payload) {
 };
 
 export async function fetchBookingsByPeriod(startDate, endDate, token) {
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/bookings-by-period`, {
         method: "POST",
         headers: {
@@ -94,7 +96,7 @@ export async function fetchBookingsByPeriod(startDate, endDate, token) {
 };
 
 export async function createBookingForUser(payload) {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/bookings`, {
         method: "POST",
         headers: {
@@ -108,7 +110,7 @@ export async function createBookingForUser(payload) {
 };
 
 export async function deleteBooking (bookingId) {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/bookings/${bookingId}`, {
         method: "DELETE",
         headers: {
