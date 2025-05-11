@@ -6,7 +6,7 @@ import { auth } from "../firebase";
 const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [setError] = useState("");
+  const [error, setError] = useState("");
 
 
   const handleLogin = async (e) => {
@@ -55,12 +55,17 @@ const LoginPage = ({ onLogin }) => {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Passord"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={LoginPageStyles.input}
         />
         <button type="submit" style={LoginPageStyles.button}>Logg inn</button>
+        {error && (
+            <p style={{ color: "red", marginTop: "1rem" }}>
+              {error}
+            </p>
+        )}
       </form>
     </div>
   );
