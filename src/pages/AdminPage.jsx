@@ -270,6 +270,17 @@ const AdminPage = ({ onLogout }) => {
       {/* Opprett Booking */}
       
       {currentTab === 3 && (
+          <Box sx={{ p: 3 }}>
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {error}
+                </Alert>
+            )}
+            {success && (
+                <Alert severity="success" sx={{ mb: 2 }}>
+                  {success}
+                </Alert>
+            )}
           <BookingForm
               selectedBooking={null}
               handleBookingUpdate={handleBookingCreate}
