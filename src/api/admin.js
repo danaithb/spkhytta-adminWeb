@@ -105,7 +105,10 @@ export async function createBookingForUser(payload) {
         },
         body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error("Kunne ikke opprette booking");
+    if (!res.ok) {
+        const errorResponse = await res.text();
+        throw new Error(errorResponse || "Kunne ikke opprette booking");
+    }
     return await res.json();
 };
 
