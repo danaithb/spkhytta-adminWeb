@@ -286,6 +286,7 @@ const AdminPage = ({ onLogout }) => {
               handleBookingUpdate={handleBookingCreate}
               onCancel={() => setCurrentTab(0)}
           />
+          </Box>
       )}
 
     </Box>
