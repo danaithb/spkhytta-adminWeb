@@ -1,71 +1,67 @@
-# Getting Started with Create React App
+# Admin Dashboard for Cabin Booking 
+spkhytta-adminWeb is a web-based React applictaion  deisigned to manage company cabin bookings. This admin interface allows administrators to oversee and manage cabin bookings, as well as view and process user data. Tha app intergrates with Nager.Date for holiday awareness. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Requirements:
+- Node.js (recommended versions: 16.0 or later)
+- npm or Yarn
+- Internet Connection (for API calls)
 
-## Available Scripts
+2. Setup Instructions:
+- Clone the Repository
+- Install denpendencies using:
+* npm install
+* yarn install
 
-In the project directory, you can run:
+3. Start development server:
+* npm start OR
+* yarn start
+- this will run the app on http://localhost:3000.
 
-### `npm start`
+4. Available Scripts
+In the project directory, you can run the following commands:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
+* npm start:
+Runs the app in the development mode.
+Open http://localhost:3000 to view it in your browser.
+The page will reload when you make changes.
 You may also see any lint errors in the console.
 
-### `npm test`
+* npm test:
+Launches the test runner in interactive watch mode.
+Check out the section about running tests for more information.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
+* npm run build: 
+Builds the app for production to the build folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
+The build is minified, and the filenames include hashes.
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+See the section about deployment for more details.
 
-### `npm run eject`
+* npm run eject
+Note: This is a one-way operation. Once you eject, you can't go back!
+If you're not satisfied with the build tool and configuration choices, you can eject at any time. This command will remove the single build dependency from your project. Instead, it will copy all the configuration files and dependencies (Webpack, Babel, ESLint, etc.) into your project so you have full control over them.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+5. Enviroment Configuration: 
+Create a .env file in the root directory of the project to store your enviroment-specific variables. 
+Note: Make sure to set up your API keys and URLs in the .env file to ensure everything works correctly.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Troubleshooting: 
+API data not loading?
+Verify that the API endpoint is correct and that you have a valid internet connection. Check your .env file for proper API key configurations.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Missing configuration?
+Ensure that your .env file is correctly set up and that the required environment variables are added.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+UI Issues?
+Try clearing your browser cache and refreshing the page. Alternatively, stop and restart the development server.
 
-## Learn More
+6. Dependencies
+React: Frontend library for building the UI.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Axios: For making HTTP requests to the backend API.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+React Router: For handling routing between pages.
 
-### Code Splitting
+Nager.Date API: For holiday data integration.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# spkhytta-adminWeb
