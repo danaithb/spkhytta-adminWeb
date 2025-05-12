@@ -34,14 +34,7 @@ const BookingList = ({
     const [activeStartDate, setActiveStartDate] = useState(new Date());
     const [error, setError] = useState("");
 
-/*
-    useEffect(() => {
-        const loadBookings = async () => {
-            const data = await fetchBookings();
-            setBookings(data);
-        };
-        loadBookings();
-    }, []);*/
+
 
     useEffect(() => {
         const fetchAvailabilityForNext3Months = async () => {

@@ -104,23 +104,6 @@ const AdminPage = ({ onLogout }) => {
   };
 
 
-  /*const handleBookingCreate = async (form) => {
-    try {
-      const payload = {
-        userId: form.userId,
-        cabinId: form.cabinId,
-        startDate: form.startDate,
-        endDate: form.endDate,
-        numberOfGuests: form.numberOfGuests,
-        businessTrip: form.businessTrip,
-      };
-      const newBooking = await createBookingForUser(payload);
-      setBookings(prev => [...prev, newBooking]);
-      setCurrentTab(0);
-    } catch (e) {
-      setError(e.response?.data || e.message);
-    }
-  };*/
   const handleBookingCreate = async (form) => {
     try {
       const payload = {

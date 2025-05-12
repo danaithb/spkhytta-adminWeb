@@ -34,7 +34,6 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
         const token = await getToken();
         const data = await fetchBookingsByPeriod(startDate, endDate, token);
         setFiltered(data.filter((booking) => booking.status?.toLowerCase() === "pending"));
-        // setFiltered(data.filter((booking) => booking.status === "pending"));
       } catch (err) {
         setError("Kunne ikke hente bookinger for valgt tidsrom");
         setFiltered([]);
@@ -65,7 +64,6 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
 
       const data = await fetchBookingsByPeriod(startDate, endDate, token);
       setFiltered(data.filter((booking) => booking.status?.toLowerCase() === "pending"));
-      // setFiltered(data.filter((booking) => booking.status === "pending"));
     } catch (e) {
       setError(e.response?.data || e.message);
     }

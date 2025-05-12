@@ -31,7 +31,7 @@ const LoginPage = ({ onLogin }) => {
         console.log("Backend authorized admin login");
         onLogin();
       } else {
-        const backendError = await response.text(); // get detailed backend message
+        const backendError = await response.text(); 
         console.error("Backend denied access:", backendError);
         setError("Ikke autorisert som admin");
       }
