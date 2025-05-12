@@ -107,6 +107,7 @@ export async function createBookingForUser(payload) {
     });
     if (!res.ok) {
         const errorResponse = await res.text();
+        console.log("Backend-feilmelding:", errorResponse);
         throw new Error(errorResponse || "Kunne ikke opprette booking");
     }
     return await res.json();
