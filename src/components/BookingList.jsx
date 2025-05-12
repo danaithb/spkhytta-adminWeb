@@ -282,7 +282,6 @@ const BookingList = ({
           {/* Redigeringsskjema */}
           {selectedBooking && (
               <Box mt={4}>
-                  )}
                   {error && (
                       <Alert severity="error" sx={{ mb: 2 }}>
                           {error}
