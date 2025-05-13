@@ -181,8 +181,6 @@ const AdminPage = ({ onLogout }) => {
             <MenuItem value="Cancelled">Kansellert</MenuItem>
             <MenuItem value="Blocked">Blokket</MenuItem>
             <MenuItem value="Waitlist">Venteliste</MenuItem>
-            <MenuItem value="Jobb">Jobb</MenuItem>
-            <MenuItem value="Private">Private</MenuItem>
           </Select>
         </FormControl>
         <Button variant="contained" onClick={() => setStatusFilter("")}>
