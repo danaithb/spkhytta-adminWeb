@@ -26,4 +26,4 @@ node_modules
 dist
 build
 
-src/firebase.js
+
