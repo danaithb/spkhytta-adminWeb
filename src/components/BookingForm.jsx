@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, Paper,} from "@mui/material";
 import { fetchUsers, fetchCabins } from "../api/admin"; 
 
+// Komponent for å vise og oppdatere en booking
 const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   const [users, setUsers] = useState([]);
   const [emailSearch, setEmailSearch] = useState("");
@@ -9,6 +10,8 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   const [cabins, setCabins] = useState([]);
   const [userId, setUserId] = useState(null);
 
+
+// Skjerma-data, initieres med valgt booking hvis det finnes
   const [formData, setFormData] = useState(() => ({
       name: selectedBooking?.user?.name || "",
       startDate: selectedBooking?.startDate || "",
@@ -20,6 +23,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       numberOfGuests: selectedBooking?.numberOfGuests || 0,
     }));
 
+    // Henter bruker og hytter ved første lasting
   useEffect(() => {
     fetchUsers()
         .then((data) => setUsers(data))
@@ -32,7 +36,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
         })
         .catch((err) => console.error("Klarte ikke hente hytter:", err));
   }, []);
-  
+  // Oppdateres skjema-data hvis valgte booking endres
   useEffect(() => {
   if (selectedBooking) {
     setFormData({
@@ -48,6 +52,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   }
 }, [selectedBooking]);
 
+// Henter endring i input-fletene
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -56,6 +61,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
     }));
   };
 
+  // Søker etter bruker basert på e-post
   const handleEmailSearch = () => {
   const user = users.find((u) => u.email.toLowerCase() === emailSearch.toLowerCase());
   if (user) {
@@ -68,7 +74,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   }
 };
 
-  // Handle form submission
+  // Håndtere innsending av skjemaet og validere at e-post er valgt ved ny booking 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedBooking && !userId) {
@@ -76,7 +82,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       return;
     }
 
-
+    // sette 
     const payload = {
       ...formData,
       userId: selectedBooking?.user?.userId || userId,
