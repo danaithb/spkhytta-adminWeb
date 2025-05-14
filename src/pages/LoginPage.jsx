@@ -3,7 +3,6 @@ import LoginPageStyles from '../theme/LoginPageStyles';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 
-//kilde: https://github.com/kristiania-pg6301-2022/pg6301-react-and-express-lectures/blob/reference/12/client/pages/loginPage.jsx
 const LoginPage = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
