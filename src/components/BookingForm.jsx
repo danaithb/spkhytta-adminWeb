@@ -82,7 +82,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       return;
     }
 
-    // sette 
+    //  Sette opp data for oppdatering eller ny booking 
     const payload = {
       ...formData,
       userId: selectedBooking?.user?.userId || userId,
@@ -105,6 +105,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
 
       <form onSubmit={handleSubmit}>
 
+        {/* Vis søkerfelt for e-post kun vis det er en ny booking */}
         {!selectedBooking && (
             <>
               <TextField
@@ -128,7 +129,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
               )}
             </>
         )}
-
+        {/*Navn og annen booking informasjon */}
         <TextField
           fullWidth
           label="Navn"
@@ -140,6 +141,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
           disabled={!selectedBooking}
         />
 
+        {/* Hyttevalg */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Hytte</InputLabel>
           <Select
@@ -156,6 +158,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
           </Select>
         </FormControl>
 
+        {/* Datoer og annen bookinginfo */}
         <TextField
           fullWidth
           type="date"
@@ -178,6 +181,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
           required
           sx={{ mb: 2 }}
         />
+        {/* Booking status */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Status</InputLabel>
           <Select
@@ -206,7 +210,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
               sx={{ mb: 2 }}
           />
 
-
+          {/* Turtype: Private eller Jobb */}
           <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Turtype</InputLabel>
               <Select
@@ -224,7 +228,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
                 <MenuItem value="business">Jobbtur</MenuItem>
               </Select>
             </FormControl>
-       
+         {/* Pris vises kun hvis status ikke er "blokkert" */}
         {formData.status !== "Blocked" && (
           <TextField
             fullWidth
@@ -238,10 +242,10 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             sx={{ mb: 2 }}
           />
         )}
-        
+        {/* Lagre og avbryt knapp */}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
          <Button type="submit" variant="contained" color="primary">
-          {selectedBooking ? "Lagre" : "Opprett"} {/* Change button text */}
+          {selectedBooking ? "Lagre" : "Opprett"} 
           </Button>
         <Button
         variant="outlined"

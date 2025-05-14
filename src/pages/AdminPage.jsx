@@ -64,7 +64,9 @@ const AdminPage = ({ onLogout }) => {
     setCurrentTab(0);
   };
 
+  // Oppdaterer en bookign hvis det er gjort endringer
   const handleBookingUpdate = async (form) => {
+    // Sjekker  om ingen felt er endret
     const isSame =
         form.startDate === selectedBooking?.startDate &&
         form.endDate === selectedBooking?.endDate &&
@@ -148,7 +150,7 @@ const AdminPage = ({ onLogout }) => {
   return (
     <Box sx={{ maxWidth: "1200px", margin: "auto", padding: 3 }}>
       
-      {/* Search Bar */}
+      {/* Søke-felt for å filterer booking basert på navn */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <TextField
           label="Søk etter navn..."
@@ -161,12 +163,12 @@ const AdminPage = ({ onLogout }) => {
         <Button variant="contained">Søk</Button>
       </Box>
 
-       {/* Logout Button BELOW search bar */}
+       {/* Logout Knapp */}
        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 3 }}>
          <LogoutButton onLogout={onLogout} />
       </Box>
 
-      {/* Status filter dropdown */}
+      {/* Dropdown for å filterer bookinger barsert på status */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <FormControl variant="outlined" sx={{ mr: 2, width: "200px" }}>
           <InputLabel>Status</InputLabel>
@@ -192,7 +194,7 @@ const AdminPage = ({ onLogout }) => {
       
 
 
-      {/* Tabs */}
+      {/* Navigasjon mellom de ulike seksjonene */}
       <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 2 }}>
         <Tabs
           value={currentTab}
@@ -207,7 +209,7 @@ const AdminPage = ({ onLogout }) => {
         </Tabs>
       </Box>
 
-      {/* Booking List */}
+      {/* Visning av bookingliste */}
       {currentTab === 0 && (
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -232,7 +234,7 @@ const AdminPage = ({ onLogout }) => {
       )}
 
       
-      {/* Edit Booking Form */}
+      {/* Skjema for å redigere en booking(Tab 1) */}
       {currentTab === 1 && (
           selectedBooking ? (
               <Box>
@@ -258,7 +260,7 @@ const AdminPage = ({ onLogout }) => {
             )
       )}
 
-      {/* Lodd - System */}
+      {/* Loddtrekking for booking (Tab 2) */}
 
       {currentTab === 2 && (
           <LotteryPage
@@ -267,7 +269,7 @@ const AdminPage = ({ onLogout }) => {
       )}
 
 
-      {/* Opprett Booking */}
+      {/* Skjema for å opperette ny booking (Tab 3) */}
       
       {currentTab === 3 && (
           <Box sx={{ p: 3 }}>

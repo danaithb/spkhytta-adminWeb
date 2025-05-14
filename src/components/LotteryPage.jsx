@@ -9,6 +9,7 @@ const formatDate = (dateStr) => {
   return `${day}.${month}.${year}`;
 };
 
+// Vise og trekk vinnere av booking og filtering av bookin i valgte perioder
 const LotteryPage = ({ bookings, onBookingsChange }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -16,6 +17,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
   const [winners, setWinners] = useState([]);
   const [error, setError] = useState("");
 
+// Henter bookinger inner valgt perioder og  filterer på status "pending"
   useEffect(() => {
     const fetchData = async () => {
       if (!startDate || !endDate) {
@@ -42,6 +44,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
     fetchData();
   }, [startDate, endDate]);
   
+  // Sender forespørsel om å prosessrer bookinger og trekk av vinner
   const handleProcess = async () => {
     if (filtered.length === 0) return;
     try {
@@ -58,10 +61,12 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
 
       setWinners(result);
 
+      // Oppdater bookinglisten i appen etter prosessering
       const token = await getToken();
       const all = await fetchBookings(token);
       onBookingsChange(all);
 
+      // Hent nye filterrte bookinger etter trekkning 
       const data = await fetchBookingsByPeriod(startDate, endDate, token);
       setFiltered(data.filter((booking) => booking.status?.toLowerCase() === "pending"));
     } catch (e) {
@@ -75,7 +80,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
         🎲 Hytte-Bingo
       </Typography>
 
-      {/* Date Range Selection */}
+      {/* Dato- for filtering*/}
       <Box sx={{ 
         display: 'flex', 
         gap: 2, 
@@ -97,14 +102,14 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
           InputLabelProps={{ shrink: true }}
         />
       </Box>
-
+      {/* Viser feilmelding hvis noe går galt */}
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
 
-      {/* Booking List */}
+      {/* Viser filteringe booking i valgte periode */}
       {filtered.length > 0 ? (
         <Box 
           sx={{ 
@@ -141,7 +146,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
         </Typography>
       )}
 
-      {/* Pick Winner Button */}
+      {/* Knapp for å trekke Vinner av Hytte-Bingo */}
         <Button
             onClick={handleProcess}
             disabled={!!error || filtered.length === 0}
@@ -158,7 +163,7 @@ const LotteryPage = ({ bookings, onBookingsChange }) => {
       </Button>
 
 
-      {/* Winner Display */}
+      {/* Skjema til Vinneren */}
       {winners.length > 0 && (
           <Box sx={{ mt: 6 }}>
             <Typography variant="h5" fontWeight="bold" sx={{ mb: 2 }}>
