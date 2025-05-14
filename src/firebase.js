@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+//kilde:https://vite.dev/guide/env-and-mode
 // Initialiserer Firebase-appen og autentisering
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
