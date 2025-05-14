@@ -13,6 +13,8 @@ import {
 
 import { updateBooking } from "../api/admin";
 
+
+// Redigeresskjema for en spesifikk booking og lokalt skjema-data
 const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setError }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -21,8 +23,8 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
     status: "",
     price: 0,
   });
-
-  const [conflict, setConflict] = useState(false);
+// Sjekke overlapp med andre bookinger
+  const [conflict, setConflict] = useState(false); 
 
   useEffect(() => {
     if (booking) {
@@ -36,6 +38,8 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
     }
   }, [booking]);
 
+
+  // Sjekker om den nye overlapper med andre befkretede bookinger
   useEffect(() => {
     const conflictExists = bookings?.some((b) =>
         b.bookingId !== booking.bookingId &&
@@ -46,7 +50,7 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
 
     setConflict(conflictExists);
   }, [formData.startDate, formData.endDate, bookings, booking.bookingId]);
-
+// Oppdaterer skjemadata ved input-endring
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -55,12 +59,15 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
     }));
   };
 
+  // Sender oppdatering til backend og stopper dersom det er dato-konflikt
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (conflict) {
       setError("Datoene overlapper en allerede bekreftet booking!");
       return;
     }
+
+    // Sjekker om noe faktisk er endret
     const isSame =
         formData.startDate === booking.startDate &&
         formData.endDate === booking.endDate &&
@@ -111,6 +118,7 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
             sx={{mb: 2}}
         />
 
+        {/* Start- og sluttdato*/}
         <TextField
             fullWidth
             type="date"
@@ -141,6 +149,7 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
             </Typography>
         )}
 
+        {/* Bookingstatus */}
         <FormControl fullWidth sx={{mb: 2}}>
           <InputLabel>Status</InputLabel>
           <Select
@@ -157,6 +166,7 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
           </Select>
         </FormControl>
 
+        {/* Pris */}
         <TextField
             fullWidth
             type="number"
@@ -169,6 +179,7 @@ const EditBookingForm = ({ bookings, booking, onCancel, onSave, setSuccess, setE
             sx={{mb: 2}}
         />
 
+        {/* Lagre og avbryt- knapp */}
         <Box sx={{display: "flex", justifyContent: "space-between", mt: 2}}>
           <Button type="submit" variant="contained" color="primary">
             LAGRE

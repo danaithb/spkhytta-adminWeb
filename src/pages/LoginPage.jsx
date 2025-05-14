@@ -43,9 +43,13 @@ const LoginPage = ({ onLogin }) => {
   };
 
   return (
+    // Ytre container for siden 
     <div style={LoginPageStyles.container}>
+
+      {/* Skjema for innlogging */}
       <form onSubmit={handleLogin} style={LoginPageStyles.form}>
         <h2>Login</h2>
+        {/* Input for e-post */}
         <input
           type="email"
           placeholder="E-post"
@@ -53,6 +57,8 @@ const LoginPage = ({ onLogin }) => {
           onChange={(e) => setEmail(e.target.value)}
           style={LoginPageStyles.input}
         />
+
+        {/* Input for passord */}
         <input
           type="password"
           placeholder="Passord"
@@ -61,6 +67,7 @@ const LoginPage = ({ onLogin }) => {
           style={LoginPageStyles.input}
         />
         <button type="submit" style={LoginPageStyles.button}>Logg inn</button>
+        {/* Viser feilmeldling */}
         {error && (
             <p style={{ color: "red", marginTop: "1rem" }}>
               {error}

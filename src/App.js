@@ -6,6 +6,7 @@ import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 
 
+// Hovedkomponent som viser ente innloggsside eller adminside basert på firebase-autentisering
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 

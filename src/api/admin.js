@@ -1,8 +1,8 @@
-//source: https://github.com/kristiania-pg6301-2022/pg6301-react-and-express-lectures/blob/reference/12/client/lib/postJSON.jsx
+//kilde: https://github.com/kristiania-pg6301-2022/pg6301-react-and-express-lectures/blob/reference/12/client/lib/postJSON.jsx
 import { getToken } from "../lib/auth";
 const API_BASE = "https://hytteportalen-307333592311.europe-west1.run.app";
 
-
+// API-funksjoner for adminpanelet - håndterer kall til backend for bookinger, brukere, hytte og kalenderdata
 export async function fetchBookings() {
     const token = getToken();
     const res = await fetch(`${API_BASE}/api/admin/bookings`, {
@@ -108,7 +108,7 @@ export async function createBookingForUser(payload) {
     if (!res.ok) {
         const errorResponse = await res.text();
         console.log("Backend-feilmelding:", errorResponse);
-        throw new Error(errorResponse || "Kunne ikke opprette booking");
+        throw new Error(errorResponse || "Kunne ikke opprette booking"); //gir errormelding når brukeren ikke har nok poeng / er i karantene
     }
     return await res.json();
 };

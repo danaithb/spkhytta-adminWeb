@@ -6,6 +6,7 @@ import BookingForm from "./BookingForm";
 import { Alert } from "@mui/material";
 
 
+// Kartlegging av status til visningsnavn og farge
 const statusMapping = {
   pending: { label: "Påventer", color: "#FFD700" },
   confirmed: { label: "Bekreftet", color: "#4CAF50" },
@@ -15,19 +16,11 @@ const statusMapping = {
 
 };
 
-/*const BookingList = ({ search = "", statusFilter = "", handleEditClick = () => {} }) => {
-  const [bookings, setBookings] = useState([]);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [unavailableDates, setUnavailableDates] = useState([]);
-  const [activeStartDate, setActiveStartDate] = useState(new Date());
-  const [error, setError] = useState("");*/
-
-const BookingList = ({
-                         bookings = [],
-                         setBookings = () => {},
-                         search = "",
-                         statusFilter = "",
-                         handleEditClick = () => {}
+const BookingList = ({ bookings = [],
+                      setBookings = () => {},
+                      search = "",
+                      statusFilter = "",
+                      handleEditClick = () => {}
                      }) => {
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [unavailableDates, setUnavailableDates] = useState([]);
@@ -35,7 +28,7 @@ const BookingList = ({
     const [error, setError] = useState("");
 
 
-
+// Hente tilgjengelighet for valgt hytte det neste 3 månedne
     useEffect(() => {
         const fetchAvailabilityForNext3Months = async () => {
             if (bookings.length === 0) return;
@@ -68,7 +61,7 @@ const BookingList = ({
         fetchAvailabilityForNext3Months();
     }, [activeStartDate, bookings, selectedBooking]);
 
-    
+    // Oppdatere valgt booking og tilgjengelighet datoer
     const handleBookingUpdate = async (formData) => {
         try {
             if (selectedBooking) {
@@ -110,7 +103,7 @@ const BookingList = ({
 
 
 
-        {/* Calendar - Hidden on mobile */}
+        {/* Kanlendar - vises kun på desktop */}
       <Box sx={{
         width: { md: "30%" },
         display: { xs: "none", md: "block" }
@@ -128,7 +121,7 @@ const BookingList = ({
 
       </Box>
 
-      {/* Booking List */}
+      {/* Bookinglist */}
       <Box sx={{ 
         width: { xs: "100%", md: "80%" },
         flexGrow: 1, 
@@ -174,7 +167,7 @@ const BookingList = ({
                   flexWrap: "wrap",
                 }}
               >
-                {/* Left Content */}
+                {/* Vestre side - bookinginformasjon */}
                 <Box sx={{
                   flex: 1,
                   minWidth: 0,
@@ -237,7 +230,7 @@ const BookingList = ({
 
                 </Box>
 
-                  {/* Right Content */}
+                  {/* Høyre side - statuse og redigereknapp */}
                 <Box sx={{
                   display: "flex", 
                   alignItems: "center",
@@ -279,7 +272,7 @@ const BookingList = ({
       </Box>
     </Box>
 
-          {/* Redigeringsskjema */}
+          {/* Redigeringsskjema vises når en booking er valgt */}
           {selectedBooking && (
               <Box mt={4}>
                   {error && (

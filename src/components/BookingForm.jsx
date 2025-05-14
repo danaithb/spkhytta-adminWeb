@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {TextField, Button, FormControl, InputLabel, Select, MenuItem, Box, Typography, Paper,} from "@mui/material";
 import { fetchUsers, fetchCabins } from "../api/admin"; 
 
+// Komponent for å vise og oppdatere en booking
 const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   const [users, setUsers] = useState([]);
   const [emailSearch, setEmailSearch] = useState("");
@@ -9,6 +10,8 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   const [cabins, setCabins] = useState([]);
   const [userId, setUserId] = useState(null);
 
+
+// Skjerma-data, initieres med valgt booking hvis det finnes
   const [formData, setFormData] = useState(() => ({
       name: selectedBooking?.user?.name || "",
       startDate: selectedBooking?.startDate || "",
@@ -20,6 +23,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       numberOfGuests: selectedBooking?.numberOfGuests || 0,
     }));
 
+    // Henter bruker og hytter ved første lasting
   useEffect(() => {
     fetchUsers()
         .then((data) => setUsers(data))
@@ -32,7 +36,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
         })
         .catch((err) => console.error("Klarte ikke hente hytter:", err));
   }, []);
-  
+  // Oppdateres skjema-data hvis valgte booking endres
   useEffect(() => {
   if (selectedBooking) {
     setFormData({
@@ -48,6 +52,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   }
 }, [selectedBooking]);
 
+// Henter endring i input-fletene
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -56,6 +61,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
     }));
   };
 
+  // Søker etter bruker basert på e-post
   const handleEmailSearch = () => {
   const user = users.find((u) => u.email.toLowerCase() === emailSearch.toLowerCase());
   if (user) {
@@ -68,7 +74,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
   }
 };
 
-  // Handle form submission
+  // Håndtere innsending av skjemaet og validere at e-post er valgt ved ny booking 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedBooking && !userId) {
@@ -76,7 +82,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
       return;
     }
 
-
+    //  Sette opp data for oppdatering eller ny booking 
     const payload = {
       ...formData,
       userId: selectedBooking?.user?.userId || userId,
@@ -99,6 +105,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
 
       <form onSubmit={handleSubmit}>
 
+        {/* Vis søkerfelt for e-post kun vis det er en ny booking */}
         {!selectedBooking && (
             <>
               <TextField
@@ -122,7 +129,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
               )}
             </>
         )}
-
+        {/*Navn og annen booking informasjon */}
         <TextField
           fullWidth
           label="Navn"
@@ -134,6 +141,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
           disabled={!selectedBooking}
         />
 
+        {/* Hyttevalg */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Hytte</InputLabel>
           <Select
@@ -150,6 +158,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
           </Select>
         </FormControl>
 
+        {/* Datoer og annen bookinginfo */}
         <TextField
           fullWidth
           type="date"
@@ -172,6 +181,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
           required
           sx={{ mb: 2 }}
         />
+        {/* Booking status */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel>Status</InputLabel>
           <Select
@@ -200,7 +210,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
               sx={{ mb: 2 }}
           />
 
-
+          {/* Turtype: Private eller Jobb */}
           <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Turtype</InputLabel>
               <Select
@@ -218,7 +228,7 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
                 <MenuItem value="business">Jobbtur</MenuItem>
               </Select>
             </FormControl>
-       
+         {/* Pris vises kun hvis status ikke er "blokkert" */}
         {formData.status !== "Blocked" && (
           <TextField
             fullWidth
@@ -232,10 +242,10 @@ const BookingForm = ({ selectedBooking, handleBookingUpdate, onCancel }) => {
             sx={{ mb: 2 }}
           />
         )}
-        
+        {/* Lagre og avbryt knapp */}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
          <Button type="submit" variant="contained" color="primary">
-          {selectedBooking ? "Lagre" : "Opprett"} {/* Change button text */}
+          {selectedBooking ? "Lagre" : "Opprett"} 
           </Button>
         <Button
         variant="outlined"
