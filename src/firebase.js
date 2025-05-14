@@ -1,15 +1,17 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+// Initialiserer Firebase-appen og autentisering
 const firebaseConfig = {
-    apiKey: "AIzaSyAHxJUlh6XgQtr16eq--fZzHvuKqZxCB5g",
-    authDomain: "spk-hytta.firebaseapp.com",
-    projectId: "spk-hytta",
-    storageBucket: "spk-hytta.appspot.com",
-    messagingSenderId: "508319635743",
-    appId: "1:508319635743:web:7c72263bea1d3720df382a",
-    measurementId: "G-XZ49LK0DYK"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
 
 const app = initializeApp(firebaseConfig);
 
