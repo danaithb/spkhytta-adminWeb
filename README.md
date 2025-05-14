@@ -1,67 +1,55 @@
-# Admin Dashboard for Cabin Booking 
-spkhytta-adminWeb is a web-based React applictaion  deisigned to manage company cabin bookings. This admin interface allows administrators to oversee and manage cabin bookings, as well as view and process user data. Tha app intergrates with Nager.Date for holiday awareness. 
+# Admin Dashboard for Cabin Booking
 
-1. Requirements:
-- Node.js (recommended versions: 16.0 or later)
+**spkhytta-adminWeb** is a web-based React application designed to manage company cabin bookings.  
+This admin interface allows administrators to oversee and manage cabin bookings, as well as view and process user data.  
+The app integrates with [Nager.Date](https://date.nager.at/) for holiday awareness.
+
+---
+
+## 1. Requirements
+- Node.js (version 16 or later recommended)
 - npm or Yarn
-- Internet Connection (for API calls)
+- Internet connection (for API calls)
 
-2. Setup Instructions:
-- Clone the Repository
-- Install denpendencies using:
-* npm install
-* yarn install
+---
 
-3. Start development server:
-* npm start OR
-* yarn start
-- this will run the app on http://localhost:3000.
+## 2. Setup Instructions
 
-4. Available Scripts
-In the project directory, you can run the following commands:
+- Clone the repository
+- Install dependencies:
+  - `npm install` or `yarn install`
 
-* npm start:
-Runs the app in the development mode.
-Open http://localhost:3000 to view it in your browser.
-The page will reload when you make changes.
-You may also see any lint errors in the console.
+---
 
-* npm test:
-Launches the test runner in interactive watch mode.
-Check out the section about running tests for more information.
+## 3. Start the Development Server
 
-* npm run build: 
-Builds the app for production to the build folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
-The build is minified, and the filenames include hashes.
-Your app is ready to be deployed!
+- `npm start` or `yarn start`  
+  This will run the app on `http://localhost:3000`.
 
-See the section about deployment for more details.
+---
 
-* npm run eject
-Note: This is a one-way operation. Once you eject, you can't go back!
-If you're not satisfied with the build tool and configuration choices, you can eject at any time. This command will remove the single build dependency from your project. Instead, it will copy all the configuration files and dependencies (Webpack, Babel, ESLint, etc.) into your project so you have full control over them.
+## 4. Available Scripts
 
-5. Enviroment Configuration: 
-Create a .env file in the root directory of the project to store your enviroment-specific variables. 
-Note: Make sure to set up your API keys and URLs in the .env file to ensure everything works correctly.
+- `npm start`: Runs the app in development mode.
+- `npm run build`: Builds the app for production.
+- `npm run eject`: Gives full control over the configuration (irreversible).
 
-Troubleshooting: 
-API data not loading?
-Verify that the API endpoint is correct and that you have a valid internet connection. Check your .env file for proper API key configurations.
+---
 
-Missing configuration?
-Ensure that your .env file is correctly set up and that the required environment variables are added.
+## 5. Environment Configuration
 
-UI Issues?
-Try clearing your browser cache and refreshing the page. Alternatively, stop and restart the development server.
+To run the app locally, create a `.env` file in the root folder and add your **Firebase configuration**:
 
-6. Dependencies
-React: Frontend library for building the UI.
+```env
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
 
-Axios: For making HTTP requests to the backend API.
-
-React Router: For handling routing between pages.
-
-Nager.Date API: For holiday data integration.
+For deployment via GitHub Actions, the same values must be added as GitHub Secrets.  
+These are injected during the build step in `.github/workflows/firebase-hosting-merge.yml`.
 
